@@ -8,7 +8,10 @@ class MainPage(webapp2.RequestHandler):
 
     def get(self):
         
-        self.response.out.write('<html><body>\n')
+        self.response.out.write('<!DOCTYPE html>\n')
+        self.response.out.write(template.render('template_html/html_head_decl.html',
+                                                {'site_title':"rFactorHotlapsServer"}))                      
+        self.response.out.write( '<html><body>\n')
         
         self.response.out.write(template.render('template_html/main.html',{}))
         self.response.out.write(template.render('template_html/javascript_decl.html',{}))
