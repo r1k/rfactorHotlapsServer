@@ -4,5 +4,25 @@ runtime: python
 api_version: 1
 
 handlers:
+- url: /bootstrap
+  static_dir: ./bootstrap
+  
+- url: /jQuery
+  static_dir: ./jQuery
+  
+- url: /images
+  static_dir: ./images
+    
+- url: /html
+  static_dir: ./html
+    
+- url: /css
+  static_dir: ./images
+  
+- url: /favicon\.ico
+  static_files: images/favicon.png
+  upload: images/favicon.png
+
 - url: .*
   script: rfactorHotlaps.py
+  
