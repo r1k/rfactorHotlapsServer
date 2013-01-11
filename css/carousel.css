@@ -13,13 +13,13 @@
     }
 
     .carousel .item {
-      height: 800px;
+      height:720px;
     }
     .carousel img {
       position: absolute;
       top: 0;
       left: 0;
-      min-width: 100%;
+      min-height:100%;
     }
 
     .carousel-caption {
