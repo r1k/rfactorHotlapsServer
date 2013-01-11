@@ -6,14 +6,13 @@ from google.appengine.ext.webapp import template
 
 class OpeningPage(webapp2.RequestHandler):
     
-    pageStyle='<link href="/css/carousel.css" rel="stylesheet">'
+    head_params = {'site_title':"rFactorHotlapsServer",
+                   'specific_style': '<link href="/css/carousel.css" rel="stylesheet">'}
     
     def get(self):
         
         self.response.out.write('<!DOCTYPE html>\n')
-        self.response.out.write(template.render('template_html/html_head_decl.html',
-                                                {'site_title':"rFactorHotlapsServer",
-                                                 'specific_style':self.pageStyle}))
+        self.response.out.write(template.render('template_html/html_head_decl.html', self.head_params))
         
         self.response.out.write( '<html><body>\n')
         self.response.out.write(template.render('template_html/openingPage.html',{}))
@@ -21,7 +20,7 @@ class OpeningPage(webapp2.RequestHandler):
         self.response.out.write("<script>\n"
                                 "!function ($) {\n"
                                 "$(function(){\n"
-                                "$('#myCarousel').carousel()\n"
+                                "$('#myCarousel').carousel({ interval: 3000})\n"
                                 "})\n"
                                 "}(window.jQuery)\n"
                                 "</script>\n"
@@ -30,18 +29,13 @@ class OpeningPage(webapp2.RequestHandler):
         
 class MainPage(webapp2.RequestHandler):
     
-    pageStyle = """<style>
-          body {
-            padding-top: 60px;
-          }
-        </style>"""
+    head_params = {'site_title':"rFactorHotlapsServer",
+                   'specific_style': "<style> body { padding-top: 60px; } </style>"}
         
     def get(self):
         
         self.response.out.write('<!DOCTYPE html>\n')
-        self.response.out.write(template.render('template_html/html_head_decl.html',
-                                                {'site_title':"rFactorHotlapsServer",
-                                                 'specific_style':self.pageStyle}))
+        self.response.out.write(template.render('template_html/html_head_decl.html', self.head_params))
                            
         self.response.out.write( '<html><body>\n')
         self.response.out.write(template.render('template_html/main.html',{}))
