@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import webapp2
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
@@ -22,12 +23,15 @@ class OpeningPage(webapp2.RequestHandler):
         self.response.out.write(template.render('template_html/javascript_decl.html',{}))
         self.response.out.write(self.carousel_call)
         self.response.out.write('\n</body></html>')
+        print ("test")
         
 
 if __name__ == "__main__":
 
+    logging.getLogger().setLevel(logging.DEBUG)
+    
     application = webapp2.WSGIApplication([
                                           ('/', OpeningPage), 
-                                          ('/r/', engine.MainPage)
+                                          (r'/r/(.*)', engine.MainPage)
                                           ], debug=True)    
     run_wsgi_app(application)
