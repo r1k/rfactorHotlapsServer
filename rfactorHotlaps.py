@@ -23,8 +23,6 @@ class OpeningPage(webapp2.RequestHandler):
         self.response.out.write(template.render('template_html/javascript_decl.html',{}))
         self.response.out.write(self.carousel_call)
         self.response.out.write('\n</body></html>')
-        print ("test")
-        
 
 if __name__ == "__main__":
 
