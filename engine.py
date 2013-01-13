@@ -4,55 +4,82 @@ import datetime
 import webapp2
 from google.appengine.ext.webapp import template
 
+def welcome_handler():
+    page_txt = "Fluffy Dedicated Servers"
+    content = template.render('template_html/branding_bar.html',{'page':page_txt})
+    content = content + template.render('template_html/welcome.html',{})
+    return content
+
 def server_handler():
-    return "servers"
+    page_txt = "Fluffy Dedicated Servers"
+    content = template.render('template_html/branding_bar.html',{'page':page_txt})
+    return content
 
 def links_handler():
-    return "links"
+    page_txt = "Links"
+    content = template.render('template_html/branding_bar.html',{'page':page_txt})
+    content = content + template.render('template_html/links.html',{})
+    return content
 
 def help_handler():
-    return "help!"
+    page_txt = "Help"
+    content = template.render('template_html/branding_bar.html',{'page':page_txt})
+    content = content + template.render('template_html/help.html',{})
+    return content
 
 def credits_handler():
-    return "hello"
+    page_txt = "Credits"
+    content = template.render('template_html/branding_bar.html',{'page':page_txt})
+    content = content + template.render('template_html/credits.html',{})
+    return content
 
 class MainPage(webapp2.RequestHandler):
     
     head_params = {'site_title':'rFactorHotlapsServer',
-                   'specific_style': '<style> body { padding-top: 60px; } </style><link href="/css/footer.css" rel="stylesheet">'}
+                   'specific_style': '<style> body { padding-top: 60px;} </style><link href="/css/footer.css" rel="stylesheet">'}
         
     def get(self, url_ext):
                 
         logging.debug(url_ext)
+
+        nav_bar_params = {}
+        active_string = 'class="active"'
         
-        self.response.out.write('<!DOCTYPE html>\n')
-        self.response.out.write(template.render('template_html/html_head_decl.html', self.head_params))
-        self.response.out.write(template.render('template_html/nav_bar.html',{}))
-        self.response.out.write( '<html><body>\n<div id="wrap">')  
-        
-        if (url_ext ==''):
-            pass
-        
-        elif (url_ext == 'welcome'):
-            self.response.out.write(template.render('template_html/main.html',{}))
+        content=""
+
+        if (url_ext =='' or url_ext == 'welcome'):
+            content = welcome_handler()
+            nav_bar_params = {'menu1':active_string}
             
         elif (url_ext == 'servers'):
-            self.response.out.write( server_handler() )
+            content = server_handler() 
+            nav_bar_params = {'menu2':active_string}
             
         elif (url_ext == 'charts'):
-            pass
+            nav_bar_params = {'menu3':active_string}
         
         elif (url_ext == 'links'):
-            self.response.out.write( links_handler() )
+            content = links_handler()
+            nav_bar_params = {'menu4':active_string}
             
         elif (url_ext == 'help'):
-            self.response.out.write( help_handler() )
+            content = help_handler()
+            nav_bar_params = {'menu5':active_string}
             
         elif (url_ext == 'credits'):
-            self.response.out.write( credits_handler() )
+            content = credits_handler()
+            nav_bar_params = {'menu6':active_string}
             
         else:
             self.redirect('/r/')
+
+
+        self.response.out.write('<!DOCTYPE html>\n')
+        self.response.out.write(template.render('template_html/html_head_decl.html', self.head_params))
+        self.response.out.write( '<html><body>\n<div id="wrap">')
+        self.response.out.write(template.render('template_html/nav_bar.html', nav_bar_params ))
+
+        self.response.out.write(content)
             
         self.response.out.write('</div>')
         self.response.out.write(template.render('template_html/footer.html',{}))
