@@ -88,8 +88,9 @@ class serverInfo():
             
             self.martins_html = uo.read()
         
-        except urllib2.URLError, e:
-            return "Unable to read server status"
+        except Exception:
+            print "Unable to read server status"
+            return
                 
         sp = serverParser()
         sp.feed(self.martins_html)

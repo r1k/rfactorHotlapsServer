@@ -14,6 +14,7 @@ def welcome_handler():
 def server_handler():
     page_txt = "Fluffy Dedicated Servers"
     content = template.render('template_html/branding_bar.html',{'page':page_txt})
+    si = serverInfo()
     return content
 
 def links_handler():
@@ -53,7 +54,11 @@ class MainPage(webapp2.RequestHandler):
             nav_bar_params = {'menu1':active_string}
             
         elif (url_ext == 'servers'):
-            content = server_handler() 
+            content = server_handler()
+            self.head_params['meta_extra'] = """<meta http-equiv="cache-control" content="no-cache">
+                                                <meta http-equiv="pragma" content="no-cache">
+                                                <meta http-equiv="expires" content="-1000">
+                                                <meta http-equiv="refresh" content="20">"""
             nav_bar_params = {'menu2':active_string}
             
         elif (url_ext == 'charts'):
