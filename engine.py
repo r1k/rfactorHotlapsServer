@@ -3,6 +3,7 @@ import os
 import datetime
 import webapp2
 from google.appengine.ext.webapp import template
+from serverstatus import serverInfo
 
 def welcome_handler():
     page_txt = "Fluffy Dedicated Servers"
