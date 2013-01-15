@@ -13,8 +13,10 @@ def welcome_handler():
 
 def server_handler():
     page_txt = "Fluffy Dedicated Servers"
+    si = []
     content = template.render('template_html/branding_bar.html',{'page':page_txt})
     si = serverInfo()
+    content = content + template.render('template_html/server_status.html',{'server_status_list':si})
     return content
 
 def links_handler():
