@@ -1,5 +1,6 @@
 import urllib2
 from HTMLParser import HTMLParser
+import logging
 
 class server_details():
     
@@ -36,6 +37,12 @@ class serverParser(HTMLParser):
     
     server_url = ''
     
+    def clear_vars(self):
+        self.server_url = ''
+        self.servers = []
+        self.content = []
+        self.field = 0
+        self.collecting_data = False
     
     def handle_starttag(self, tag, attrs):
         if self.collecting_data:
@@ -77,29 +84,34 @@ class serverInfo():
     
     url = 'http://nodb.homeserver.com/rfactor/servers.asp'
     url2= 'http://nodb.homeserver.com/rfactor/'
-    martins_html = ''
+    martins_html = []
     server_list = []
     
     def __init__(self):
        
+        self.server_list = []
         try:
-            
             uo = urllib2.urlopen(self.url)
             
             self.martins_html = uo.read()
-        
+            
         except Exception:
             print "Unable to read server status"
             return
                 
         sp = serverParser()
+        sp.clear_vars()
         sp.feed(self.martins_html)
         
         self.server_list = sp.servers
         
+        #logging.debug( 'Number :' + str(len(self.server_list)))
+        #for s in self.server_list:
+        #    logging.debug( s )
+        
         for s in self.server_list:
             s.server = "<a href='" + self.url2 + s.server + "'>" + s.options + "</a>"
-        
+
         
 if __name__ == "__main__":
     
