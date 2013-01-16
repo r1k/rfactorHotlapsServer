@@ -17,6 +17,10 @@ def server_handler():
     content = template.render('template_html/branding_bar.html',{'page':page_txt})
     si = serverstatus.serverInfo()
     srvrs = si.server_list
+    srvrs.append(serverstatus.server_details(('DS1','Silverstone', 'Bus', 'Qualifying','-','Noddy and Big ears','<a href="http://localhost:8080">Home</a>','')))
+    srvrs.append(serverstatus.server_details(('DS2','Monza', 'Chariot', 'Deathmatch','-','Ben Hur','<a href="http://localhost:8080">Home</a>','')))
+    srvrs.append(serverstatus.server_details(('DS3','Milky Way', 'XWing', 'Qualifying','-','Darth','<a href="http://localhost:8080">Home</a>','')))
+    srvrs.append(serverstatus.server_details(('DS4','Indianapolis', 'NASCAR', 'Turning Left','-','Dick Trickle','<a href="http://localhost:8080">Home</a>','')))
     pairs = sup.pairs(srvrs)
     content = content + template.render('template_html/server_status.html',{'pairs':pairs})
     return content
