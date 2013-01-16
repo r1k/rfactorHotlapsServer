@@ -24,12 +24,19 @@ class OpeningPage(webapp2.RequestHandler):
         self.response.out.write(self.carousel_call)
         self.response.out.write('\n</body></html>')
 
-if __name__ == "__main__":
 
-    logging.getLogger().setLevel(logging.DEBUG)
+app = webapp2.WSGIApplication([
+                                ('/', OpeningPage), 
+                                (r'/r/(.*)', engine.MainPage)
+                              ], debug=True) 
+
+# OLD PYTHON 2.5 VERSION
+# if __name__ == "__main__":
+
+#     logging.getLogger().setLevel(logging.DEBUG)
     
-    application = webapp2.WSGIApplication([
-                                          ('/', OpeningPage), 
-                                          (r'/r/(.*)', engine.MainPage)
-                                          ], debug=True)    
-    run_wsgi_app(application)
+#     application = webapp2.WSGIApplication([
+#                                           ('/', OpeningPage), 
+#                                           (r'/r/(.*)', engine.MainPage)
+#                                           ], debug=True)    
+#     run_wsgi_app(application)
