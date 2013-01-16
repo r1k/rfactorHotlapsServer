@@ -96,7 +96,7 @@ class serverInfo():
             self.martins_html = uo.read()
             
         except Exception:
-            print "Unable to read server status"
+            #print "Unable to read server status"
             return
                 
         sp = serverParser()
