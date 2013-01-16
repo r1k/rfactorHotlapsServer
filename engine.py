@@ -3,7 +3,8 @@ import os
 import datetime
 import webapp2
 from google.appengine.ext.webapp import template
-from serverstatus import serverInfo
+import serverstatus
+import support_functions as sup
 
 def welcome_handler():
     page_txt = "Fluffy Dedicated Servers"
@@ -13,10 +14,11 @@ def welcome_handler():
 
 def server_handler():
     page_txt = "Fluffy Dedicated Servers"
-    si = []
     content = template.render('template_html/branding_bar.html',{'page':page_txt})
-    si = serverInfo()
-    content = content + template.render('template_html/server_status.html',{'server_status_list':si})
+    si = serverstatus.serverInfo()
+    srvrs = si.server_list
+    pairs = sup.pairs(srvrs)
+    content = content + template.render('template_html/server_status.html',{'pairs':pairs})
     return content
 
 def links_handler():

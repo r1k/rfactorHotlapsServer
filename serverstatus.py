@@ -106,11 +106,13 @@ class serverInfo():
         self.server_list = sp.servers
         
         #logging.debug( 'Number :' + str(len(self.server_list)))
-        #for s in self.server_list:
-        #    logging.debug( s )
+        
         
         for s in self.server_list:
             s.server = "<a href='" + self.url2 + s.server + "'>" + s.options + "</a>"
+        for s in self.server_list:
+            logging.debug( s )
+
 
         
 if __name__ == "__main__":
