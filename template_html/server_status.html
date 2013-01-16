@@ -14,7 +14,7 @@
 							<tr><th width='45%'>Session Type</th><td>{{ ss.seshtype }}</td></tr>
 							<tr><th width='45%'>Session Status</th><td>{{ ss.seshstatus }}</td></tr>
 							<tr><th width='45%'>Drivers</th><td>{{ ss.driverlist }}</td></tr>
-							<tr><th width='45%'>Options</th><td>{{ ss.server }}</td></tr>
+							<tr><th width='45%'>Options</th><td>{{ ss.server|safe }}</td></tr>
 						</table>
 					</div>
 				{% endfor %}
@@ -29,7 +29,7 @@
 							<tr><th width='45%'>Session Type</th><td>{{ ss.seshtype }}</td></tr>
 							<tr><th width='45%'>Session Status</th><td>{{ ss.seshstatus }}</td></tr>
 							<tr><th width='45%'>Drivers</th><td>{{ ss.driverlist }}</td></tr>
-							<tr><th width='45%'>Options</th><td>{{ ss.server }}</td></tr>
+							<tr><th width='45%'>Options</th><td>{{ ss.server|safe }}</td></tr>
 						</table>
 					</div>
 				{% endfor %}
