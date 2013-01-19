@@ -44,9 +44,6 @@ def credits_handler():
     return content
 
 class MainPage(webapp2.RequestHandler):
-    
-    
-        
     def get(self, url_ext):
 
         head_params = []

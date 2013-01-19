@@ -31,14 +31,3 @@ app = webapp2.WSGIApplication([
                                 ('/', OpeningPage), 
                                 (r'/r/(.*)', engine.MainPage)
                               ], debug=True) 
-
-# OLD PYTHON 2.5 VERSION
-# if __name__ == "__main__":
-
-#     logging.getLogger().setLevel(logging.DEBUG)
-    
-#     application = webapp2.WSGIApplication([
-#                                           ('/', OpeningPage), 
-#                                           (r'/r/(.*)', engine.MainPage)
-#                                           ], debug=True)    
-#     run_wsgi_app(application)
