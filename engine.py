@@ -45,10 +45,13 @@ def credits_handler():
 
 class MainPage(webapp2.RequestHandler):
     
-    head_params = {'site_title':'rFactorHotlapsServer',
-                   'specific_style': '<style> body { padding-top: 60px;} </style><link href="/css/footer.css" rel="stylesheet">'}
+    
         
     def get(self, url_ext):
+
+        head_params = []
+        head_params = {'site_title':'rFactorHotlapsServer',
+                   'specific_style': '<style> body { padding-top: 60px;} </style><link href="/css/footer.css" rel="stylesheet">'}
                 
         logging.debug(url_ext)
 
@@ -63,7 +66,7 @@ class MainPage(webapp2.RequestHandler):
             
         elif (url_ext == 'servers'):
             content = server_handler()
-            self.head_params['meta_extra'] = """<meta http-equiv="cache-control" content="no-cache">
+            head_params['meta_extra'] = """<meta http-equiv="cache-control" content="no-cache">
                                                 <meta http-equiv="pragma" content="no-cache">
                                                 <meta http-equiv="expires" content="-1000">
                                                 <meta http-equiv="refresh" content="20">"""
@@ -89,7 +92,7 @@ class MainPage(webapp2.RequestHandler):
 
 
         self.response.out.write('<!DOCTYPE html>\n')
-        self.response.out.write(template.render('template_html/html_head_decl.html', self.head_params))
+        self.response.out.write(template.render('template_html/html_head_decl.html', head_params))
         self.response.out.write( '<html><body>\n<div id="wrap">')
         self.response.out.write(template.render('template_html/nav_bar.html', nav_bar_params ))
 

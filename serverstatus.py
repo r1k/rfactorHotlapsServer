@@ -84,29 +84,28 @@ class serverInfo():
     
     url = 'http://nodb.homeserver.com/rfactor/servers.asp'
     url2= 'http://nodb.homeserver.com/rfactor/'
-    martins_html = []
+    
     server_list = []
     
     def __init__(self):
        
         self.server_list = []
+        martins_html = []
+
         try:
             uo = urllib2.urlopen(self.url)
             
-            self.martins_html = uo.read()
+            martins_html = uo.read()
             
         except Exception:
-            #print "Unable to read server status"
+            logging.warning( "Unable to read server status" )
             return
                 
         sp = serverParser()
         sp.clear_vars()
-        sp.feed(self.martins_html)
+        sp.feed(martins_html)
         
         self.server_list = sp.servers
-        
-        #logging.debug( 'Number :' + str(len(self.server_list)))
-        
         
         for s in self.server_list:
             s.server = "<a href='" + self.url2 + s.server + "'>" + s.options + "</a>"
