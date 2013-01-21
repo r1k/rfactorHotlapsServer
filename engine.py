@@ -56,11 +56,19 @@ class charts_handler():
     db_if = None
 
     def __init__(self, league):
-        self.league = league
         self.db_if = lap_datastore_interface( league )
 
     def process ( self, params ):
-        pass
+        if len(params) == 0:
+            #generate html containing top times for each track found
+            pass
+        elif params[:5] == 'track':
+            #generate list of times for a specific track
+            pass
+        elif parames[:] == 'tanddhist':
+            #list all times for a specific driver on a specific track
+            pass
+
 
 class MainPage(webapp2.RequestHandler):
 
