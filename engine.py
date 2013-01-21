@@ -5,6 +5,7 @@ import webapp2
 from google.appengine.ext.webapp import template
 import serverstatus
 import support_functions as sup
+import data_store
 
 def welcome_handler():
     page_txt = "Fluffy Dedicated Servers"
@@ -43,8 +44,34 @@ def credits_handler():
     content = content + template.render('template_html/credits.html',{})
     return content
 
+def admin_handler( url ):
+    page_txt = "Admin"
+    content = template.render('template_html/branding_bar.html',{'page':page_txt})
+    if (url == 'lap_insert')
+        content = content + template.render('template_html/admin_lap_insert.html',{})
+    return content
+
+class charts_handler():
+
+    db_if = None
+
+    def __init__(self, league):
+        self.league = league
+        self.db_if = lap_datastore_interface( league )
+
+    def process ( self, params ):
+        pass
+
 class MainPage(webapp2.RequestHandler):
+
+    root_node_name='league'
+
     def get(self, url_ext):
+
+        if not data_store.league.get_by_key_name( self.root_node_name ):
+            # Populate db on first run
+            root = league( key_name = self.root_node_name )
+            root.put()
 
         head_params = []
         head_params = {'site_title':'rFactorHotlapsServer',
@@ -70,6 +97,8 @@ class MainPage(webapp2.RequestHandler):
             nav_bar_params = {'menu2':active_string}
             
         elif (url_ext == 'charts'):
+            handler = charts_handler( root_node_name )
+            contents = handler.process( url_ext[6:] )
             nav_bar_params = {'menu3':active_string}
         
         elif (url_ext == 'links'):
@@ -83,6 +112,9 @@ class MainPage(webapp2.RequestHandler):
         elif (url_ext == 'credits'):
             content = credits_handler()
             nav_bar_params = {'menu6':active_string}
+
+        elif (url_ext[:5] == 'admin'):
+            content = admin_handler( url_ext[6:] )
             
         else:
             self.redirect('/r/')
@@ -99,3 +131,4 @@ class MainPage(webapp2.RequestHandler):
         self.response.out.write(template.render('template_html/footer.html',{}))
         self.response.out.write(template.render('template_html/javascript_decl.html',{}))   
         self.response.out.write('</body></html>')
+        
