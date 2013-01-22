@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import datetime
 from google.appengine.ext import db
 
@@ -10,6 +11,7 @@ class lap_record( db.model ):
 	date = db.DateTimeProperty( auto_now_add = True )
 
 	driver = db.StringProperty( required = True )
+	car = db.StringProperty( required = True )
 	track = db.StringProperty( required = True )
 
 	first_sector = db.TimeProperty()
@@ -33,7 +35,7 @@ class lap_datastore_interface:
 
 		new_lr.put()
 
-	def get_tracks (self, track_name = 'all'):
+	def get_tracks (self):
 
 		query = lap_record.all().ancestor(self._root_node).projection('track')
 
