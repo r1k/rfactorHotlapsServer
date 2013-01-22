@@ -51,6 +51,9 @@ def admin_handler( url ):
         content = content + template.render('template_html/admin_lap_insert.html',{})
     return content
 
+
+
+
 class charts_handler():
 
     db_if = None
@@ -65,9 +68,14 @@ class charts_handler():
         elif params[:5] == 'track':
             #generate list of times for a specific track
             pass
-        elif parames[:] == 'tanddhist':
+        elif parames[:9] == 'tanddhist':
             #list all times for a specific driver on a specific track
-            pass
+            track_list = self.db_if.get_tracks()
+
+            for t in track_list:
+                lap_times = self.db_if.get_best_times(t)
+                tr = sup.track_results(lap_times)
+
 
 
 class MainPage(webapp2.RequestHandler):
