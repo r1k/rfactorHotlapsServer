@@ -1,0 +1,31 @@
+<div class="container">
+	{% for t in tracks %}
+	<div class="row-fluid">
+		<div class="span4 offset4">
+			<table class="result table" width="100%" border="0">
+				<tr><th colspan='7'><h2 class='black'>{{ t.track_name }}</h2></th></tr>
+				<tr bgcolor="#9acd32">
+					<th width="20%">Driver</th>
+					<th>Car</th>
+					<th width="10%">Sector 1</th>
+					<th width="10%">Sector 2</th>
+					<th width="10%">Sector 3</th>
+					<th width="15%">Lap</th>
+					<th width="18%">Date</th>
+				</tr>
+				{% for result in t.result_list %}
+				<tr class="highlight">
+					<td align="center">{{ result.driver }}</td>
+					<td align="center">{{ result.car }}</td>
+					<td align="center">{{ result.first_sector }}</td>
+					<td align="center">{{ result.second_sector }}</td>
+					<td align="center">{{ result.third_sector }}</td>
+					<td align="center"><a href="/tanddhist/{{ results.driver }}/{{ results.track }}/" title="Cick to see all recorded best laps by {{ results.driver }} for this track and vehicle class">{{ result.total_time }}</a> ({{ result.behind }})</td>
+					<td align="center">{{ result.date }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+	{% endfor %}
+</div>
