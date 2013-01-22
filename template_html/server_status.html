@@ -3,7 +3,7 @@
 	 	 displaying the server status in each one -->
 	{% for pair in pairs %}
 		<div class="row-fluid">
-			{% if 3 > 1 %} 
+			{% if pair|length > 1 %} 
 				<div class="span2"></div>
 				{% for ss in pair %}
 					<div class="span4">
