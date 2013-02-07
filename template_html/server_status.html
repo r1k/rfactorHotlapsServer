@@ -1,39 +1,39 @@
 <div class="container">
-	<!-- loop through the number of servers creating a number of blocks
-	 	 displaying the server status in each one -->
-	{% for pair in pairs %}
-		<div class="row-fluid">
-			{% if pair|length > 1 %} 
-				<div class="span2"></div>
-				{% for ss in pair %}
-					<div class="span4">
-						<table class="result table" width="100%" border="0">
-							<tr><th colspan='2'><h4 class='black'>{{ ss.name }}</h4></th></tr>
-							<tr><th width='45%'>Track</th><td>{{ ss.track }}</td></tr>
-							<tr><th width='45%'>Vehicle Class</th><td>{{ ss.vclass }}</td></tr>
-							<tr><th width='45%'>Session Type</th><td>{{ ss.seshtype }}</td></tr>
-							<tr><th width='45%'>Session Status</th><td>{{ ss.seshstatus }}</td></tr>
-							<tr><th width='45%'>Drivers</th><td>{{ ss.driverlist }}</td></tr>
-							<tr><th width='45%'>Options</th><td>{{ ss.server|safe }}</td></tr>
-						</table>
-					</div>
-				{% endfor %}
-			{% else %}
-				<div class="span4"></div>
-				{% for ss in pair %}
-					<div class="span4">
-						<table class="result table" width="100%" border="0">
-							<tr><th colspan='2'><h4 class='black'>{{ ss.name }}</h4></th></tr>
-							<tr><th width='45%'>Track</th><td>{{ ss.track }}</td></tr>
-							<tr><th width='45%'>Vehicle Class</th><td>{{ ss.vclass }}</td></tr>
-							<tr><th width='45%'>Session Type</th><td>{{ ss.seshtype }}</td></tr>
-							<tr><th width='45%'>Session Status</th><td>{{ ss.seshstatus }}</td></tr>
-							<tr><th width='45%'>Drivers</th><td>{{ ss.driverlist }}</td></tr>
-							<tr><th width='45%'>Options</th><td>{{ ss.server|safe }}</td></tr>
-						</table>
-					</div>
-				{% endfor %}
-			{% endif %}
-		</div>
-	{% endfor %}
+    <!-- loop through the number of servers creating a number of blocks
+        displaying the server status in each one -->
+    {% for pair in pairs %}
+        <div class="row-fluid">
+            {% if pair|length > 1 %}
+                <div class="span2"></div>
+                {% for ss in pair %}
+                    <div class="span4">
+                        <table class="result table" width="100%" border="0">
+                            <tr><th colspan='2'><h4 class='black'>{{ ss.name }}</h4></th></tr>
+                            <tr><th width='45%'>Track</th><td>{{ ss.track }}</td></tr>
+                            <tr><th width='45%'>Vehicle Class</th><td>{{ ss.vclass }}</td></tr>
+                            <tr><th width='45%'>Session Type</th><td>{{ ss.seshtype }}</td></tr>
+                            <tr><th width='45%'>Session Status</th><td>{{ ss.seshstatus }}</td></tr>
+                            <tr><th width='45%'>Drivers</th><td>{{ ss.driverlist }}</td></tr>
+                            <tr><th width='45%'>Options</th><td>{{ ss.server|safe }}</td></tr>
+                        </table>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="span4"></div>
+                {% for ss in pair %}
+                    <div class="span4">
+                        <table class="result table" width="100%" border="0">
+                            <tr><th colspan='2'><h4 class='black'>{{ ss.name }}</h4></th></tr>
+                            <tr><th width='45%'>Track</th><td>{{ ss.track }}</td></tr>
+                            <tr><th width='45%'>Vehicle Class</th><td>{{ ss.vclass }}</td></tr>
+                            <tr><th width='45%'>Session Type</th><td>{{ ss.seshtype }}</td></tr>
+                            <tr><th width='45%'>Session Status</th><td>{{ ss.seshstatus }}</td></tr>
+                            <tr><th width='45%'>Drivers</th><td>{{ ss.driverlist }}</td></tr>
+                            <tr><th width='45%'>Options</th><td>{{ ss.server|safe }}</td></tr>
+                        </table>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endfor %}
 </div>
