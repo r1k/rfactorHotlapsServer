@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import logging
 import datetime
 from data_store import lap_record
@@ -77,4 +78,3 @@ class track_results:
                 lap.behind = lap.total_time - self.fastest_lap_time
 
                 self.result_list.append()
-

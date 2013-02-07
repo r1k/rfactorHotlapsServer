@@ -85,7 +85,7 @@ class lap_datastore_interface:
                 drivers_list[lap.driver] = 1
                 fastest_laps_list = lap
 
-            if len(fastest_laps) == max_num_times:
+            if len(fastest_laps_list) == max_num_times:
                 break
 
         return fastest_laps_list
