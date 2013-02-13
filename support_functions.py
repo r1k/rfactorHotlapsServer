@@ -10,6 +10,13 @@ def pairs(l):
     return [l[i:i + 2] for i in range(0, len(l), 2)]
 
 
+def create_hrefs(string):
+    if '://' in string:
+        return '<a href="' + string + '">' + string + '</a>'
+    else:
+        return string
+
+
 class lap_result:
 
     driver = ''

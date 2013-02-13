@@ -1,6 +1,7 @@
 import urllib2
 from HTMLParser import HTMLParser
 import logging
+import support_functions as sf
 
 
 class server_details():
@@ -14,9 +15,10 @@ class server_details():
     seshstatus = ''
     driverlist = ''
     extras = 7
+    total_rows = 6
 
     def __init__(self, dtls):
-        self.details = dtls
+        self.details = dtls[self.extras:]
         self.name = dtls[0]
         self.image = dtls[1]
         self.track = dtls[2]
@@ -24,17 +26,39 @@ class server_details():
         self.seshtype = dtls[4]
         self.seshstatus = dtls[5]
         self.driverlist = dtls[6]
+        self.total_rows = len(dtls) - 1
 
     def __str__(self):
+        string = self.name + ', ' +\
+                 self.image + ', ' +\
+                 self.track + ', ' +\
+                 self.vclass + ', ' +\
+                 self.seshtype + ', ' +\
+                 self.seshstatus + ', ' +\
+                 self.driverlist
 
-        string = []
         for i in self.details:
-            if len(string) != 0:
                 string = string + ', ' + i
-            else:
-                string = i
 
         return string
+
+    def rebuild_links(self):
+        #only need to check extra links
+        string = ""
+        local_details = []
+
+        for d in self.details:
+            if 'rfactor://' in d:
+                string = '<a href="' + d + '">Join Server</a>'
+            elif 'live.asp' in d:
+                string = '<a href="' + d + '">Live stats</a>'
+            elif 'rfactor/woli' in d:
+                string = '<a href="' + d + '">Start Server PC</a>'
+            else:
+                string = d
+            local_details.append(string)
+
+        self.details = local_details
 
 
 class serverParser(HTMLParser):
@@ -94,10 +118,14 @@ class serverInfo():
         self.open_url(self.url)
         self.parse_html()
 
+        return self.server_list
+
     def test(self, test_filename):
 
         self.open_test_file(test_filename)
         self.parse_html()
+
+        return self.server_list
 
     def open_url(self, url):
         try:
@@ -121,6 +149,7 @@ class serverInfo():
         self.server_list = sp.servers
 
         for s in self.server_list:
+            s.rebuild_links()
             logging.debug(s)
 
 
