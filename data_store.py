@@ -2,11 +2,11 @@
 from google.appengine.ext import db
 
 
-class league (db.model):
-    name = db.StringProperty(required=True)
+class league (db.Model):
+    date = db.DateTimeProperty(auto_now_add=True)
 
 
-class lap_record(db.model):
+class lap_record(db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
 
     driver = db.StringProperty(required=True)
@@ -43,7 +43,8 @@ class lap_datastore_interface:
 
     def get_lap_times(self, track_name, driver_name='all'):
 
-        query = lap_record.all().ancestor(self._root_node).filter('track =', track_name)
+        query = lap_record.all()
+        query.ancestor(self._root_node).filter('track =', track_name)
 
         if driver_name != 'all':
             query.filter('driver =', driver_name)
@@ -54,7 +55,8 @@ class lap_datastore_interface:
 
     def get_lap_times_by_date(self, track_name, driver_name='all'):
 
-        query = lap_record.all().ancestor(self._root_node).filter('track =', track_name)
+        query = lap_record.all()
+        query.ancestor(self._root_node).filter('track =', track_name)
 
         if driver_name != 'all':
             query.filter('driver =', driver_name)
@@ -65,7 +67,8 @@ class lap_datastore_interface:
 
     def get_best_times(self, track_name, driver_name='all', max_num_times=10):
 
-        query = lap_record.all().ancestor(self._root_node).filter('track =', track_name)
+        query = lap_record.all()
+        query.ancestor(self._root_node).filter('track =', track_name)
 
         if driver_name != 'all':
             query.filter('driver =', driver_name)
