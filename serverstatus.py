@@ -5,28 +5,36 @@ import logging
 
 class server_details():
 
+    details = []
     name = ''
+    image = ''
     track = ''
     vclass = ''
     seshtype = ''
     seshstatus = ''
     driverlist = ''
-    server = ''
-    options = ''
+    extras = 7
 
-    def __init__(self, details):
-        self.name = details[0]
-        self.track = details[1]
-        self.vclass = details[2]
-        self.seshtype = details[3]
-        self.seshstatus = details[4]
-        self.driverlist = details[5]
-        self.server = details[6]
-        self.options = details[7]
+    def __init__(self, dtls):
+        self.details = dtls
+        self.name = dtls[0]
+        self.image = dtls[1]
+        self.track = dtls[2]
+        self.vclass = dtls[3]
+        self.seshtype = dtls[4]
+        self.seshstatus = dtls[5]
+        self.driverlist = dtls[6]
 
     def __str__(self):
 
-        return self.name + ', ' + self.track + ', ' + self.vclass + ', ' + self.seshtype + ', ' + self.seshstatus + ', ' + self.driverlist + ', ' + self.server
+        string = []
+        for i in self.details:
+            if len(string) != 0:
+                string = string + ', ' + i
+            else:
+                string = i
+
+        return string
 
 
 class serverParser(HTMLParser):
@@ -34,7 +42,7 @@ class serverParser(HTMLParser):
     servers = []
     content = []
 
-    collecting_data = False
+    collecting_data = 0
     field = 0
 
     server_url = ''
@@ -47,67 +55,71 @@ class serverParser(HTMLParser):
         self.collecting_data = False
 
     def handle_starttag(self, tag, attrs):
-        if self.collecting_data:
-            if tag == 'a':
-                url = '#'
-                for attr in attrs:
-                    if attr[0] == 'href':
-                        url = attr[1]
-                        break
-                self.server_url = url
+        if tag == 'ul':
+            self.collecting_data = 1
+            self.field = 0
 
-        if tag == 'table':
-            for attr in attrs:
-                if attr[0] == 'class' and attr[1] == 'result':
-                    self.collecting_data = True
-                    self.field = 0
-                    break
+        if tag == 'li' and self.collecting_data == 1:
+            self.collecting_data = 2
 
     def handle_endtag(self, tag):
-        if ((tag == 'table') and (self.collecting_data)):
-            self.collecting_data = False
-            self.servers.append(server_details(self.content))
-            self.content = []
+        if self.collecting_data > 0:
+            if tag == 'ul':
+                self.collecting_data = 0
+                self.servers.append(server_details(self.content))
+                self.content = []
+            elif tag == 'li':
+                self.collecting_data = 1
 
     def handle_data(self, data):
-        if self.collecting_data:
-            if ((self.field < 12) and ((self.field % 2) == 0)):
-                self.content.append(data)
-            elif self.field == 12:
-                self.content.append(self.server_url)
-                self.content.append(data)
-            self.field = self.field + 1
+        if self.collecting_data == 2:
+            self.content.append(data.strip())
 
 
 class serverInfo():
 
     url = 'http://nodb.homeserver.com/rfactor/servers.asp'
-    url2 = 'http://nodb.homeserver.com/rfactor/'
-
+    test_file = []
     server_list = []
+    server_status_html = []
 
     def __init__(self):
 
         self.server_list = []
-        martins_html = []
+        self.server_status_html = []
+        self.test_file = []
 
+    def run(self):
+
+        self.open_url(self.url)
+        self.parse_html()
+
+    def test(self, test_filename):
+
+        self.open_test_file(test_filename)
+        self.parse_html()
+
+    def open_url(self, url):
         try:
             uo = urllib2.urlopen(self.url)
 
-            martins_html = uo.read()
+            self.server_status_html = uo.read()
 
         except Exception:
             logging.warning("Unable to read server status")
             return
 
+    def open_test_file(self, tf):
+        f = open(tf, 'r')
+        self.server_status_html = f.read()
+
+    def parse_html(self):
         sp = serverParser()
         sp.clear_vars()
-        sp.feed(martins_html)
+        sp.feed(self.server_status_html)
 
         self.server_list = sp.servers
 
-        for s in self.server_list:
-            s.server = "<a href='" + self.url2 + s.server + "'>" + s.options + "</a>"
         for s in self.server_list:
             logging.debug(s)
 
@@ -116,7 +128,14 @@ if __name__ == "__main__":
 
     #debug mode
 
-    si = serverInfo()
+    test_files = ('test_src/serverstatus/pc_booted-loading-cannot_join.htm',
+                  'test_src/serverstatus/pc_booted-running-user_can_join.htm',
+                  'test_src/serverstatus/pc_booting-cannot-join.htm',
+                  'test_src/serverstatus/pc_offline-cannot_join.htm')
 
-    for sr in si.server_list:
-        print(sr)
+    for test in test_files:
+        si = serverInfo()
+        si.test(test)
+
+        for sr in si.server_list:
+            print(sr)
