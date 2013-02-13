@@ -1,7 +1,6 @@
 import urllib2
 from HTMLParser import HTMLParser
 import logging
-import support_functions as sf
 
 
 class server_details():
