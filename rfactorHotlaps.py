@@ -31,6 +31,6 @@ class OpeningPage(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
                                 ('/', OpeningPage),
-                                (r'/r/(.*)', engine.MainPage)
+                                (r'/r/(.*)', engine.MainPage),
                                 (r'/xml/(.*)', backend.XMLInterface)
                               ], debug=True)
