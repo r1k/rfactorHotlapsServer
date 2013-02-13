@@ -92,7 +92,7 @@ class MainPage(webapp2.RequestHandler):
 
         head_params = []
         head_params = {'site_title': 'rFactorHotlapsServer',
-                   'specific_style': '<style> body { padding-top: 60px;} </style><link href="/css/footer.css" rel="stylesheet">'}
+                       'specific_style': '<style> body { padding-top: 60px;} </style><link href="/css/footer.css" rel="stylesheet">'}
 
         logging.debug(url_ext)
 
@@ -108,9 +108,9 @@ class MainPage(webapp2.RequestHandler):
         elif (url_ext == 'servers'):
             content = server_handler()
             head_params['meta_extra'] = """<meta http-equiv="cache-control" content="no-cache">
-                                                <meta http-equiv="pragma" content="no-cache">
-                                                <meta http-equiv="expires" content="-1000">
-                                                <meta http-equiv="refresh" content="20">"""
+                                           <meta http-equiv="pragma" content="no-cache">
+                                           <meta http-equiv="expires" content="-1000">
+                                           <meta http-equiv="refresh" content="20">"""
             nav_bar_params = {'menu2': active_string}
 
         elif (url_ext == 'charts'):
