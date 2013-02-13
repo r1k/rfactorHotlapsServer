@@ -2,50 +2,37 @@
     <!-- loop through the number of servers creating a number of blocks
         displaying the server status in each one -->
     {% for pair in pairs %}
-        <div class="row-fluid">
+        <div class="row-fluid"><div class="span12">
             {% if pair|length > 1 %}
-                <div class="span2"></div>
-                {% for ss in pair %}
-                    <div class="span4">
-                        <table class="result table" width="100%" border="0">
-                            <tr><th colspan='2'><h4>{{ ss.name }}</h4></th></tr>
-                            <tr>
-                                <td rowspan='{{ ss.total_rows }}' width="60%"><img src='{{ ss.image|safe }}'></td>
-                                <td>{{ ss.track }}</td>
-                            </tr>
-                            <tr><td>{{ ss.vclass }}</td></tr>
-                            <tr><td>{{ ss.seshtype }}</td></tr>
-                            <tr><td>{{ ss.seshstatus }}</td></tr>
-                            <tr><td>{{ ss.driverlist }}</td></tr>
-                            <tr><td>{{ ss.server|safe }}</td></tr>
-                            {% for s in ss.details %}
-                                <tr><td>{{ s|safe }}</td></tr>
-                            {% endfor %}
-                        </table>
-                    </div>
-                {% endfor %}
+                <div class="span1"></div>
             {% else %}
-                <div class="span4"></div>
+                <div class="span3"></div>
+            {% endif %}
                 {% for ss in pair %}
-                    <div class="span4">
-                        <table class="result table" width="100%" border="0">
-                            <tr><th colspan='2'><h4>{{ ss.name }}</h4></th></tr>
-                            <tr>
-                                <td rowspan='{{ ss.total_rows }}' width="60%"><img src='{{ ss.image|safe }}'></td>
-                                <td>{{ ss.track }}</td>
-                            </tr>
-                            <tr><td>{{ ss.vclass }}</td></tr>
-                            <tr><td>{{ ss.seshtype }}</td></tr>
-                            <tr><td>{{ ss.seshstatus }}</td></tr>
-                            <tr><td>{{ ss.driverlist }}</td></tr>
-                            <tr><td>{{ ss.server|safe }}</td></tr>
-                            {% for s in ss.details %}
-                                <tr><td>{{ s|safe }}</td></tr>
-                            {% endfor %}
-                        </table>
+                    {% if pair|length > 1 %}
+                        <div class="span5"><div class="row-fluid" style="background-color:#FFFF54; margin-top:20px">
+                    {% else %}
+                        <div class="span6"><div class="row-fluid" style="background-color:#FFFF54; margin-top:20px">
+                    {% endif %}
+                        <h4 style="margin-left:20px">{{ ss.name }}</h4>
+                        <div class="row-fluid" style="background-color:#484848;color:white">
+                            <div class="span5">
+                                <img src='{{ ss.image|safe }}'' width=100%>
+                            </div>
+                            <div class="span7">
+                                <div class="row-fluid">{{ ss.track }}</div>
+                                <div class="row-fluid">{{ ss.vclass }}</div>
+                                <div class="row-fluid">{{ ss.seshtype }}</div>
+                                <div class="row-fluid">{{ ss.seshstatus }}</div>
+                                <div class="row-fluid">{{ ss.driverlist }}</div>
+                                <div class="row-fluid">{{ ss.server|safe }}</div>
+                                {% for s in ss.details %}
+                                    <div class="row-fluid">{{ s|safe }}</div>
+                                {% endfor %}
+                            </div>
+                        </div></div>
                     </div>
                 {% endfor %}
-            {% endif %}
-        </div>
+        </div></div>
     {% endfor %}
 </div>
