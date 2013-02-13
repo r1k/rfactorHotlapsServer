@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import logging
-import datetime
+import datetime as dt
 from data_store import lap_record
 
 
@@ -20,11 +20,12 @@ class lap_result:
 
     total_time = None
 
-    behind = datetime(datetime.MINYEAR, 1, 1, tzinfo=None)
+    behind = dt.datetime(dt.MINYEAR, 1, 1, tzinfo=None)
 
     date = None
 
-    def __init__(self, driver, car, first_sector, second_sector, third_sector, total_time, date):
+    def __init__(self, driver, car,
+                 first_sector, second_sector, third_sector, total_time, date):
         self.driver = driver
         self.car = car
         self.first_sector = first_sector
