@@ -101,7 +101,7 @@ class serverParser(HTMLParser):
 
 class serverInfo():
 
-    url = 'http://nodb.homeserver.com/rfactor/servers.asp'
+    url = 'http://nodb.homeserver.com/rfactor/serversNew.asp'
     test_file = []
     server_list = []
     server_status_html = []
