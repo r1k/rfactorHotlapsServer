@@ -17,11 +17,11 @@ def server_handler():
     page_txt = "Fluffy Dedicated Servers"
     content = template.render('template_html/branding_bar.html', {'page': page_txt})
     si = serverstatus.serverInfo()
-    srvrs = si.server_list
-    srvrs.append(serverstatus.server_details(('DS1', 'Silverstone', 'Bus', 'Qualifying', '-', 'Noddy and Big ears', '<a href="http://localhost:8080">Home</a>', '')))
-    srvrs.append(serverstatus.server_details(('DS2', 'Monza', 'Chariot', 'Deathmatch', '-', 'Ben Hur', '<a href="http://localhost:8080">Home</a>', '')))
-    srvrs.append(serverstatus.server_details(('DS3', 'Milky Way', 'XWing', 'Qualifying', '-', 'Darth', '<a href="http://localhost:8080">Home</a>', '')))
-    srvrs.append(serverstatus.server_details(('DS4', 'Indianapolis', 'NASCAR', 'Turning Left', '-', 'Dick Trickle', '<a href="http://localhost:8080">Home</a>', '')))
+    srvrs = si.run()
+    #srvrs.append(serverstatus.server_details(('DS1', 'Silverstone', 'Bus', 'Qualifying', '-', 'Noddy and Big ears', '<a href="http://localhost:8080">Home</a>', '')))
+    #srvrs.append(serverstatus.server_details(('DS2', 'Monza', 'Chariot', 'Deathmatch', '-', 'Ben Hur', '<a href="http://localhost:8080">Home</a>', '')))
+    #srvrs.append(serverstatus.server_details(('DS3', 'Milky Way', 'XWing', 'Qualifying', '-', 'Darth', '<a href="http://localhost:8080">Home</a>', '')))
+    #srvrs.append(serverstatus.server_details(('DS4', 'Indianapolis', 'NASCAR', 'Turning Left', '-', 'Dick Trickle', '<a href="http://localhost:8080">Home</a>', '')))
     pairs = sup.pairs(srvrs)
     content = content + template.render('template_html/server_status.html', {'pairs': pairs})
     return content
@@ -110,7 +110,7 @@ class MainPage(webapp2.RequestHandler):
             head_params['meta_extra'] = """<meta http-equiv="cache-control" content="no-cache">
                                            <meta http-equiv="pragma" content="no-cache">
                                            <meta http-equiv="expires" content="-1000">
-                                           <meta http-equiv="refresh" content="20">"""
+                                           <meta http-equiv="refresh" content="200">"""
             nav_bar_params = {'menu2': active_string}
 
         elif (url_ext == 'charts'):
