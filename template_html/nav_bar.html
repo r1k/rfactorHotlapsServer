@@ -2,14 +2,14 @@
   <div class="navbar-inner">
     <div class="container">
       <ul class="nav">
-          <li {{ menu1 }}><a href="/r/Welcome">Welcome</a></li>
-          <li {{ menu2 }}><a href="/r/servers">rFactor Servers</a></li>
-          <li {{ menu3 }}><a href="/r/charts">Hotlap Charts</a></li>
-          <li {{ menu4 }}><a href="/r/links">Links</a></li>
-          <li {{ menu5 }}><a href="/r/help">Help</a></li>
+          <li {{ menu1|safe }}><a href="/r/Welcome">Welcome</a></li>
+          <li {{ menu2|safe }}><a href="/r/servers">rFactor Servers</a></li>
+          <li {{ menu3|safe }}><a href="/r/charts">Hotlap Charts</a></li>
+          <li {{ menu4|safe }}><a href="/r/links">Links</a></li>
+          <li {{ menu5|safe }}><a href="/r/help">Help</a></li>
       </ul>
       <ul class="nav pull-right">
-          <li {{ menu6 }}><a href="/r/credits">Credits</a></li>
+          <li {{ menu6|safe }}><a href="/r/credits">Credits</a></li>
       </ul>
     </div>
   </div>
