@@ -93,6 +93,6 @@ class lap_datastore_interface:
 
         return fastest_laps_list
 
-    def __init__(self, league):
+    def __init__(self, lge):
 
-        self._root_node = league(key_name=league)
+        self._root_node = league(key_name=lge)
