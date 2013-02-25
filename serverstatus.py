@@ -104,13 +104,13 @@ class serverInfo():
     url = 'http://nodb.homeserver.com/rfactor/serversNew.asp'
     test_file = []
     server_list = []
-    server_status_html = []
+    server_status_html = ""
 
     def __init__(self):
 
         self.server_list = []
-        self.server_status_html = []
-        self.test_file = []
+        self.server_status_html = ""
+        self.test_file = ""
 
     def run(self):
 
