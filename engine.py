@@ -1,19 +1,22 @@
 import logging
-import webapp2
 from google.appengine.ext.webapp import template
+
+import handler
 import serverstatus
 import support_functions as sup
 import data_store
+import config
 
 
-def welcome_handler():
+def welcome_handler(url_ext):
+    logging.debug("welcome_handler")
     page_txt = "Fluffy Dedicated Servers"
     content = template.render('template_html/branding_bar.html', {'page': page_txt})
-    content = content + template.render('template_html/welcome.html', {})
+    content += template.render('template_html/welcome.html', {})
     return content
 
-
-def server_handler():
+def server_handler(url_ext):
+    logging.debug("server_handler")
     page_txt = "Fluffy Dedicated Servers"
     content = template.render('template_html/branding_bar.html', {'page': page_txt})
     si = serverstatus.serverInfo()
@@ -23,128 +26,99 @@ def server_handler():
     #srvrs.append(serverstatus.server_details(('DS3', 'Milky Way', 'XWing', 'Qualifying', '-', 'Darth', '<a href="http://localhost:8080">Home</a>', '')))
     #srvrs.append(serverstatus.server_details(('DS4', 'Indianapolis', 'NASCAR', 'Turning Left', '-', 'Dick Trickle', '<a href="http://localhost:8080">Home</a>', '')))
     pairs = sup.pairs(srvrs)
-    content = content + template.render('template_html/server_status.html', {'pairs': pairs})
+    content += template.render('template_html/server_status.html', {'pairs': pairs})
     return content
 
 
-def links_handler():
+def links_handler(url_ext):
+    logging.debug("links_handler")
     page_txt = "Links"
     content = template.render('template_html/branding_bar.html', {'page': page_txt})
-    content = content + template.render('template_html/links.html', {})
+    content += template.render('template_html/links.html', {})
     return content
 
 
-def help_handler():
+def help_handler(url_ext):
+    logging.debug("help_handler")
     page_txt = "Help"
     content = template.render('template_html/branding_bar.html', {'page': page_txt})
-    content = content + template.render('template_html/help.html', {})
+    content += template.render('template_html/help.html', {})
     return content
 
 
-def credits_handler():
+def credits_handler(url_ext):
+    logging.debug("credits_handler")
     page_txt = "Credits"
     content = template.render('template_html/branding_bar.html', {'page': page_txt})
-    content = content + template.render('template_html/credits.html', {})
+    content += template.render('template_html/credits.html', {})
     return content
 
 
-def admin_handler(url):
-    page_txt = "Admin"
-    content = template.render('template_html/branding_bar.html', {'page': page_txt})
-    if (url == 'lap_insert'):
-        content = content + template.render('template_html/admin_lap_insert.html', {})
-    return content
+def charts_handler(url_ext):
+
+    db_if = data_store.lap_datastore_interface(config.root_node())
+
+    temp = ""
+
+    if len(url_ext) == 0:
+        #generate html containing top times for each track found
+        tracks = data_store.lap_datastore_interface.get_tracks()
+        for track in tracks:
+            temp += template.render('template_html/track_result.html', {})
+
+    elif url_ext[:5] == 'track':
+        #generate list of times for a specific track
+        pass
+
+    elif url_ext[:9] == 'tanddhist':
+        #list all times for a specific driver on a specific track
+        track_list = db_if.get_tracks()
+
+        for t in track_list:
+            lap_times = db_if.get_best_times(t)
+            tr = sup.track_results(lap_times)
+
+    return temp
 
 
-class charts_handler():
+class urlHandler(handler.hdlr):
 
-    db_if = None
+    handlers = {}
 
-    def __init__(self, league):
-        self.db_if = data_store.lap_datastore_interface(league)
+    def __init__(self, request=None, response=None):
+        super(urlHandler, self).__init__(request=request, response=response)
 
-    def process(self, params):
-        if len(params) == 0:
-            #generate html containing top times for each track found
-            pass
-        elif params[:5] == 'track':
-            #generate list of times for a specific track
-            pass
-        elif params[:9] == 'tanddhist':
-            #list all times for a specific driver on a specific track
-            track_list = self.db_if.get_tracks()
-
-            for t in track_list:
-                lap_times = self.db_if.get_best_times(t)
-                tr = sup.track_results(lap_times)
-
-
-class MainPage(webapp2.RequestHandler):
-
-    root_node_name = 'league'
+        self.handlers['welcome'] = welcome_handler
+        self.handlers['servers'] = server_handler
+        self.handlers['charts'] = charts_handler
+        self.handlers['links'] = links_handler
+        self.handlers['help'] = help_handler
+        self.handlers['credits'] = credits_handler
 
     def get(self, url_ext):
 
-        if not data_store.league.get_by_key_name(self.root_node_name):
-            # Populate db on first run
-            logging.debug("Creating the root league node")
-            root = data_store.league(key_name=self.root_node_name)
-            root.put()
-        else:
-            logging.debug("root node exists")
-
-        head_params = []
-        head_params = {'site_title': 'rFactorHotlapsServer',
-                       'specific_style': '<style> body { padding-top: 60px;} </style><link href="/css/footer.css" rel="stylesheet">'}
+        self.check_for_root()
 
         logging.debug(url_ext)
 
-        nav_bar_params = {}
-        active_string = 'class="active"'
+        url_split = url_ext.split('/')
+        url_root = url_split[0]
+        url_extras = ''.join(url_split[1:])
 
+        active_string = 'class="active"'
         content = ""
 
-        if (url_ext == '' or url_ext == 'welcome'):
-            content = welcome_handler()
-            nav_bar_params = {'menu1': active_string}
+        if (url_root in self.handlers):
+            content = self.handlers[url_root](''.join(url_extras))
+        else:
+            self.redirect('/r/welcome')
 
-        elif (url_ext == 'servers'):
-            content = server_handler()
-            head_params['meta_extra'] = """<meta http-equiv="cache-control" content="no-cache">
+        if (url_root == 'servers'):
+            self.head_params['meta_extra'] = """<meta http-equiv="cache-control" content="no-cache">
                                            <meta http-equiv="pragma" content="no-cache">
                                            <meta http-equiv="expires" content="-1000">
                                            <meta http-equiv="refresh" content="200">"""
-            nav_bar_params = {'menu2': active_string}
 
-        elif (url_ext == 'charts'):
-            handler = charts_handler(self.root_node_name)
-            content = handler.process(url_ext[6:])
-            nav_bar_params = {'menu3': active_string}
+        self.nav_bar_params = {url_root: active_string}
+        self.render(content)
 
-        elif (url_ext == 'links'):
-            content = links_handler()
-            nav_bar_params = {'menu4': active_string}
-
-        elif (url_ext == 'help'):
-            content = help_handler()
-            nav_bar_params = {'menu5': active_string}
-
-        elif (url_ext == 'credits'):
-            content = credits_handler()
-            nav_bar_params = {'menu6': active_string}
-
-        elif (url_ext[:5] == 'admin'):
-            content = admin_handler(url_ext[6:])
-
-        else:
-            self.redirect('/r/')
-
-        self.response.out.write('<!DOCTYPE html>\n')
-        self.response.out.write(template.render('template_html/html_head_decl.html', head_params))
-        self.response.out.write('<html><body>\n<div id="wrap">')
-        self.response.out.write(template.render('template_html/nav_bar.html', nav_bar_params))
-        self.response.out.write(content)
-        self.response.out.write('</div>')
-        self.response.out.write(template.render('template_html/footer.html', {}))
-        self.response.out.write(template.render('template_html/javascript_decl.html', {}))
-        self.response.out.write('</body></html>')
