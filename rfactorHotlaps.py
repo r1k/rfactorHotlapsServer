@@ -4,8 +4,10 @@ import webapp2
 from google.appengine.ext.webapp import template
 
 import engine
+import admin_handler
 import backend
 import logging
+import config
 
 class OpeningPage(webapp2.RequestHandler):
 
@@ -14,7 +16,7 @@ class OpeningPage(webapp2.RequestHandler):
     def get(self):
 
         head_params = []
-        head_params = {'site_title': "rFactorHotlapsServer",
+        head_params = {'site_title': config.site_title(),
                        'specific_style': '<link href="/css/carousel.css" rel="stylesheet">'}
 
         carousel_call = []
@@ -32,6 +34,7 @@ class OpeningPage(webapp2.RequestHandler):
 logging.getLogger().setLevel(logging.DEBUG)
 app = webapp2.WSGIApplication([
                                 ('/', OpeningPage),
-                                (r'/r/(.*)', engine.MainPage),
+                                (r'/r/(.*)', engine.urlHandler),
+                                (r'/admin/(.*)', admin_handler.handler),
                                 (r'/xml/(.*)', backend.XMLInterface)
                               ], debug=True)
