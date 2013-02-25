@@ -87,8 +87,11 @@ class MainPage(webapp2.RequestHandler):
 
         if not data_store.league.get_by_key_name(self.root_node_name):
             # Populate db on first run
+            logging.debug("Creating the root league node")
             root = data_store.league(key_name=self.root_node_name)
             root.put()
+        else:
+            logging.debug("root node exists")
 
         head_params = []
         head_params = {'site_title': 'rFactorHotlapsServer',

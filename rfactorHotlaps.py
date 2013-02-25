@@ -5,7 +5,7 @@ from google.appengine.ext.webapp import template
 
 import engine
 import backend
-
+import logging
 
 class OpeningPage(webapp2.RequestHandler):
 
@@ -29,6 +29,7 @@ class OpeningPage(webapp2.RequestHandler):
         self.response.out.write('\n</body></html>')
 
 
+logging.getLogger().setLevel(logging.DEBUG)
 app = webapp2.WSGIApplication([
                                 ('/', OpeningPage),
                                 (r'/r/(.*)', engine.MainPage),
