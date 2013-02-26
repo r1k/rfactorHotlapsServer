@@ -22,7 +22,8 @@ class handler(handler.hdlr):
         if url_ext.startswith('/'):
             url_ext = url_ext[1:]
 
-        content = template.render('template_html/branding_bar.html', {'page': page_txt})
+        content = template.render('template_html/branding_bar.html',
+                                 {'page': page_txt})
 
         if url_ext.startswith('lap_insert'):
             logging.debug("lap_insert")
@@ -31,8 +32,32 @@ class handler(handler.hdlr):
         else:
             content += template.render('template_html/admin.html', {})
 
-        logging.debug("done")
         self.render(content)
 
     def lap_insert(self):
         return template.render('template_html/admin_lap_insert.html', {})
+
+    def post(self, url_ext):
+
+        logging.info("post")
+
+        lap_details = []
+        self.check_for_root()
+
+        if url_ext.startswith('/'):
+            url_ext = url_ext[1:]
+
+        if url_ext.startswith("lap_insert"):
+            logging.info("lap time submitted")
+
+            lap_details.append(self.request.get("driverName"))
+            lap_details.append(self.request.get("carName"))
+            lap_details.append(self.request.get("trackName"))
+            lap_details.append(self.request.get("firstSector"))
+            lap_details.append(self.request.get("secondSector"))
+            lap_details.append(self.request.get("thirdSector"))
+            lap_details.append(self.request.get("totalTime"))
+
+            logging.info(str(lap_details))
+
+        self.redirect('/admin/')

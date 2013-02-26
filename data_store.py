@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from google.appengine.ext import db
-import logging
+
 
 class league (db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
@@ -42,7 +42,6 @@ class lap_datastore_interface:
 
         tracks = set(list(query.run()))
 
-        #logging.debug('track list length {!s}'.format(str(len(tracks))))
         return tracks
 
     def get_lap_times(self, track_name, driver_name='all'):

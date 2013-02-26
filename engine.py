@@ -11,7 +11,8 @@ import config
 def welcome_handler(url_ext):
     logging.debug("welcome_handler")
     page_txt = "Fluffy Dedicated Servers"
-    content = template.render('template_html/branding_bar.html', {'page': page_txt})
+    content = template.render('template_html/branding_bar.html',
+                             {'page': page_txt})
     content += template.render('template_html/welcome.html', {})
     return content
 
@@ -19,22 +20,34 @@ def welcome_handler(url_ext):
 def server_handler(url_ext):
     logging.debug("server_handler")
     page_txt = "Fluffy Dedicated Servers"
-    content = template.render('template_html/branding_bar.html', {'page': page_txt})
+    content = template.render('template_html/branding_bar.html',
+                             {'page': page_txt})
     si = serverstatus.serverInfo()
     srvrs = si.run()
-    #srvrs.append(serverstatus.server_details(('DS1', 'Silverstone', 'Bus', 'Qualifying', '-', 'Noddy and Big ears', '<a href="http://localhost:8080">Home</a>', '')))
-    #srvrs.append(serverstatus.server_details(('DS2', 'Monza', 'Chariot', 'Deathmatch', '-', 'Ben Hur', '<a href="http://localhost:8080">Home</a>', '')))
-    #srvrs.append(serverstatus.server_details(('DS3', 'Milky Way', 'XWing', 'Qualifying', '-', 'Darth', '<a href="http://localhost:8080">Home</a>', '')))
-    #srvrs.append(serverstatus.server_details(('DS4', 'Indianapolis', 'NASCAR', 'Turning Left', '-', 'Dick Trickle', '<a href="http://localhost:8080">Home</a>', '')))
+    #srvrs.append(serverstatus.server_details(
+            #('DS1', 'Silverstone', 'Bus', 'Qualifying', '-',
+             #'Noddy and Big ears',
+             #'<a href="http://localhost:8080">Home</a>', '')))
+    #srvrs.append(serverstatus.server_details(
+            #('DS2', 'Monza', 'Chariot', 'Deathmatch', '-',
+             #'Ben Hur', '<a href="http://localhost:8080">Home</a>', '')))
+    #srvrs.append(serverstatus.server_details(
+            #('DS3', 'Milky Way', 'XWing', 'Qualifying', '-',
+             #'Darth', '<a href="http://localhost:8080">Home</a>', '')))
+    #srvrs.append(serverstatus.server_details(
+            #('DS4', 'Indianapolis', 'NASCAR', 'Turning Left', '-',
+             #'Dick Trickle', '<a href="http://localhost:8080">Home</a>', '')))
     pairs = sup.pairs(srvrs)
-    content += template.render('template_html/server_status.html', {'pairs': pairs})
+    content += template.render('template_html/server_status.html',
+                              {'pairs': pairs})
     return content
 
 
 def links_handler(url_ext):
     logging.debug("links_handler")
     page_txt = "Links"
-    content = template.render('template_html/branding_bar.html', {'page': page_txt})
+    content = template.render('template_html/branding_bar.html',
+                             {'page': page_txt})
     content += template.render('template_html/links.html', {})
     return content
 
@@ -42,7 +55,8 @@ def links_handler(url_ext):
 def help_handler(url_ext):
     logging.debug("help_handler")
     page_txt = "Help"
-    content = template.render('template_html/branding_bar.html', {'page': page_txt})
+    content = template.render('template_html/branding_bar.html',
+                             {'page': page_txt})
     content += template.render('template_html/help.html', {})
     return content
 
@@ -50,7 +64,8 @@ def help_handler(url_ext):
 def credits_handler(url_ext):
     logging.debug("credits_handler")
     page_txt = "Credits"
-    content = template.render('template_html/branding_bar.html', {'page': page_txt})
+    content = template.render('template_html/branding_bar.html',
+                             {'page': page_txt})
     content += template.render('template_html/credits.html', {})
     return content
 
@@ -119,10 +134,11 @@ class urlHandler(handler.hdlr):
             self.redirect('/r/welcome')
 
         if (url_root == 'servers'):
-            self.head_params['meta_extra'] = """<meta http-equiv="cache-control" content="no-cache">
-                                                <meta http-equiv="pragma" content="no-cache">
-                                                <meta http-equiv="expires" content="-1000">
-                                                <meta http-equiv="refresh" content="200">"""
+            self.head_params['meta_extra'] = \
+                """<meta http-equiv="cache-control" content="no-cache">
+                   <meta http-equiv="pragma" content="no-cache">
+                   <meta http-equiv="expires" content="-1000">
+                   <meta http-equiv="refresh" content="200">"""
 
         self.nav_bar_params = {url_root: active_string}
         self.render(content)
