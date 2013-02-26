@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import webapp2
-from webapp2_extras.routes import RedirectRoute
 from google.appengine.ext.webapp import template
 
 import engine
@@ -39,5 +38,5 @@ app = webapp2.WSGIApplication([
                                 (r'/r/(.*)', engine.urlHandler),
                                 (r'/admin(.*)', admin_handler.handler),
                                 (r'/xml/(.*)', backend.XMLInterface),
-                                (r'/(.*)', OpeningPage)
+                                (r'/(.*)', OpeningPage)  # junk url collector
                               ], debug=True)

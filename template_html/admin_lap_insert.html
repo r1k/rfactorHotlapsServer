@@ -1,17 +1,52 @@
 <!-- form for manually inserting laptimes -->
 
 <div class="container"><div class="row-fluid"><div class="span6 offset3">
-    <form>
-        <fieldset>
-        <h2>Enter Lap Details</h2>
-        <input type="text" placeholder="driver name...">
-        <input type="text" placeholder="car...">
-        <input type="text" placeholder="track...">
-        <input type="text" placeholder="1st sector...">
-        <input type="text" placeholder="2nd sector...">
-        <input type="text" placeholder="3rd sector...">
-        <input type="text" placeholder="Total time...">
-        <button class="btn-primary" type="submit">Add</button>
-        </fieldset>
+<h2>Enter Lap Details</h2>
+    <form class="form-horizontal"">
+        <div class="control-group">
+            <label class="control-label" for="driverName">Driver Name</label>
+            <div class="controls">
+                <input type="text" id="driverName" placeholder="driver name...">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="carName">Car</label>
+            <div class="controls">
+                <input type="text" id="carName" placeholder="car...">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="trackName">Track Name</label>
+            <div class="controls">
+                <input type="text" id="trackName" placeholder="track name...">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="firstSector">First Sector</label>
+            <div class="controls">
+                <input type="text" id="firstSector" placeholder="first sector...">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="secondSector">Second Sector</label>
+            <div class="controls">
+                <input type="text" id="secondSector" placeholder="second sector...">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="thirdSector">Third Sector</label>
+            <div class="controls">
+                <input type="text" id="thirdSector" placeholder="third sector...">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="totalTime">Total Time</label>
+            <div class="controls">
+                <input type="text" id="totalTime" placeholder="total time...">
+            </div>
+        </div>
+        <div class="control-group">
+            <button class="btn-primary" type="submit">Add</button>
+        </div>
     </form>
 </div></div></div>

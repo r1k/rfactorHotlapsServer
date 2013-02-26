@@ -15,6 +15,7 @@ def welcome_handler(url_ext):
     content += template.render('template_html/welcome.html', {})
     return content
 
+
 def server_handler(url_ext):
     logging.debug("server_handler")
     page_txt = "Fluffy Dedicated Servers"
