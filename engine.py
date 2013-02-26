@@ -63,15 +63,17 @@ def charts_handler(url_ext):
 
     if len(url_ext) == 0:
         #generate html containing top times for each track found
-        tracks = data_store.lap_datastore_interface.get_tracks()
+        tracks = db_if.get_tracks()
+        logging.debug('track list')
         for track in tracks:
-            temp += template.render('template_html/track_result.html', {})
+            logging.debug(track)
+            #temp += template.render('template_html/track_result.html', {})
 
-    elif url_ext[:5] == 'track':
+    elif url_ext.startswith('track'):
         #generate list of times for a specific track
         pass
 
-    elif url_ext[:9] == 'tanddhist':
+    elif url_ext.startswith('tanddhist'):
         #list all times for a specific driver on a specific track
         track_list = db_if.get_tracks()
 
@@ -88,6 +90,8 @@ class urlHandler(handler.hdlr):
 
     def __init__(self, request=None, response=None):
         super(urlHandler, self).__init__(request=request, response=response)
+
+        self.handlers = {}
 
         self.handlers['welcome'] = welcome_handler
         self.handlers['servers'] = server_handler
@@ -116,9 +120,9 @@ class urlHandler(handler.hdlr):
 
         if (url_root == 'servers'):
             self.head_params['meta_extra'] = """<meta http-equiv="cache-control" content="no-cache">
-                                           <meta http-equiv="pragma" content="no-cache">
-                                           <meta http-equiv="expires" content="-1000">
-                                           <meta http-equiv="refresh" content="200">"""
+                                                <meta http-equiv="pragma" content="no-cache">
+                                                <meta http-equiv="expires" content="-1000">
+                                                <meta http-equiv="refresh" content="200">"""
 
         self.nav_bar_params = {url_root: active_string}
         self.render(content)

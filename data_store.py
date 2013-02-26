@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from google.appengine.ext import db
-
+import logging
 
 class league (db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
@@ -36,10 +36,14 @@ class lap_datastore_interface:
         new_lr.put()
 
     def get_tracks(self):
+        query = db.Query(lap_record, projection=('track',))
+        query.ancestor(self._root_node)
+        query.order('track')
 
-        query = lap_record.all().ancestor(self._root_node).projection('track')
+        tracks = set(list(query.run()))
 
-        return set(list(query))
+        #logging.debug('track list length {!s}'.format(str(len(tracks))))
+        return tracks
 
     def get_lap_times(self, track_name, driver_name='all'):
 
@@ -95,4 +99,4 @@ class lap_datastore_interface:
 
     def __init__(self, lge):
 
-        self._root_node = league(key_name=lge)
+        self._root_node = league.get_by_key_name(lge)

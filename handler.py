@@ -5,9 +5,10 @@ from google.appengine.ext.webapp import template
 import config
 import data_store
 
-# handler base class
+
 class hdlr(webapp2.RequestHandler):
 
+    # handler base class
     head_params = {}
     nav_bar_params = {}
 

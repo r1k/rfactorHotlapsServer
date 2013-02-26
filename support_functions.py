@@ -5,6 +5,10 @@ import datetime as dt
 from data_store import lap_record
 
 
+def unique_result(array):
+    return set(list(array))
+
+
 def pairs(l):
     #return zip(*(iter(l),)*2)
     return [l[i:i + 2] for i in range(0, len(l), 2)]
