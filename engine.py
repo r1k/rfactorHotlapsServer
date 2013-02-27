@@ -72,13 +72,11 @@ def credits_handler(url_ext):
 
 def charts_handler(url_ext):
 
-    db_if = data_store.lap_datastore_interface(config.root_node())
-
     temp = ""
 
     if len(url_ext) == 0:
         #generate html containing top times for each track found
-        tracks = db_if.get_track_names()
+        tracks = data_store.tracks(config.root_node()).get_all_names()
         logging.debug('track list')
         for track in tracks:
             logging.debug(track)
@@ -90,11 +88,13 @@ def charts_handler(url_ext):
 
     elif url_ext.startswith('tanddhist'):
         #list all times for a specific driver on a specific track
-        track_list = db_if.get_tracks()
+        db_if = data_store.interface(config.root_node())
+        track_list = data_store.tracks(db_if.league_entity).get_all_names()
 
         for t in track_list:
             lap_times = db_if.get_best_times(t)
             tr = sup.track_results(lap_times)
+            logging.debug(str(tr))
 
     return temp
 
