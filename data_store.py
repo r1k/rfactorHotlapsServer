@@ -4,7 +4,15 @@ import config
 import logging
 
 
+###############################################
+# database record classes
+
+
 class league (db.Model):
+    """
+        root node.
+        doesn't actually need any data, just for store structure
+    """
     date = db.DateTimeProperty(auto_now_add=True)
 
     def get_name(self):
@@ -12,6 +20,21 @@ class league (db.Model):
 
 
 class track (db.Model):
+    """
+        track node. sits under league node
+        doesn't actually need any data, just for store structure
+    """
+    date = db.DateTimeProperty(auto_now_add=True)
+
+    def get_name(self):
+        return self.key().name()
+
+
+class car_class(db.Model):
+    """
+        car class node. sits under track node
+        doesn't actually need any data, just for store structure
+    """
     date = db.DateTimeProperty(auto_now_add=True)
 
     def get_name(self):
@@ -19,9 +42,13 @@ class track (db.Model):
 
 
 class lap_record(db.Model):
+    """
+        contains the actual data. sits under the car class node
+    """
     date = db.DateTimeProperty(auto_now_add=True)
 
     driver = db.StringProperty(required=True)
+    car_class = db.StringProperty(required=True)
     car = db.StringProperty(required=True)
     track = db.StringProperty(required=True)
 
@@ -29,31 +56,76 @@ class lap_record(db.Model):
     second_sector = db.FloatProperty()
     total_time = db.FloatProperty(required=True)
 
-
-def get_league_by_name(self, league_n=config.root_node()):
-    return league.get_by_key_name(league_n)
-
-
-def get_leagues(self):
-    query = db.Query(league)
-    league_list = query.run()
-    leagues = set(league_list)
-    return leagues
+################################################
+#class to use to access the data objects
 
 
-def get_league_names(self):
-    league_list = self.get_leagues()
-    league_names = [x.get_name() for x in league_list]
-    leagues = set(league_names)
-    return leagues
+class leagues:
+    def get_by_name(self, name=config.root_node()):
+        return league.get_by_key_name(name)
+
+    def get_all(self):
+        query = db.Query(league)
+        league_list = query.run()
+        lges = set(league_list)
+        return lges
+
+    def get_all_names(self):
+        league_list = self.get_all()
+        league_names = [x.get_name() for x in league_list]
+        lges = set(league_names)
+        return lges
+
+    def add_new(self, name):
+        lg = self.get_by_name(name)
+        if lg is None:
+            lge = league(key_name=name)
+            lge.put()
+            return lge
+        else:
+            return lg
 
 
-class lap_datastore_interface:
-
-    root_node = None
+class tracks:
+    league_entity = None
 
     def __init__(self, lge):
-        self._root_node = get_league_by_name(lge)
+        if isinstance(lge, str):
+            self.league_entity = leagues().get_by_name(lge)
+        elif isinstance(lge, league):
+            self.league_entity = lge
+
+    def get_by_name(self, track_name):
+        track_key = db.Key.from_path('league', self.league_entity.key().name(),
+                                     'track', track_name)
+        return db.get(track_key)
+
+    def get_all(self):
+        query = db.Query(track)
+        query.ancestor(self.league_entity)
+        track_list = query.run()
+        return set(track_list)
+
+    def get_all_names(self):
+        track_list = self.get_all()
+        track_names = [x.get_name() for x in track_list]
+        return set(track_names)
+
+    def add_new(self, track_name):
+        tr = track(parent=self.league_entity, key_name=track_name)
+        tr.put()
+        return tr
+
+
+class interface:
+
+    league_entity = None
+
+    def __init__(self, lge):
+        if isinstance(lge, str):
+            self.league_entity = leagues().get_by_name(lge)
+        elif isinstance(lge, league):
+            self.league_entity = lge
 
 #public functions
     def add_lap_time(self, lap_details):
@@ -82,32 +154,10 @@ class lap_datastore_interface:
         new_lr.put()
         logging.info('complete the put')
 
-    def add_track(self, track_n):
-        tr = track(parent=self._root_node, key_name=track_n)
-        tr.put()
-        return tr
-
-    def get_tracks(self):
-        query = db.Query(track)
-        query.ancestor(self._root_node)
-        track_list = query.run()
-        tracks = set(track_list)
-        return tracks
-
-    def get_track_names(self):
-        track_list = self.get_tracks()
-        track_names = [x.get_name() for x in track_list]
-        tracks = set(track_names)
-        return tracks
-
-    def get_track_by_name(self, track_n):
-        track_k = db.Key.from_path('league', self._root_node.get_name(), 'track', track_n)
-        return db.get(track_k)
-
     def get_lap_times(self, track_name, driver_name='all'):
 
         query = lap_record.all()
-        query.ancestor(self._root_node).filter('track =', track_name)
+        query.ancestor(self.league_entity).filter('track =', track_name)
 
         if driver_name != 'all':
             query.filter('driver =', driver_name)
@@ -119,7 +169,7 @@ class lap_datastore_interface:
     def get_lap_times_by_date(self, track_name, driver_name='all'):
 
         query = lap_record.all()
-        query.ancestor(self._root_node).filter('track =', track_name)
+        query.ancestor(self.league_entity).filter('track =', track_name)
 
         if driver_name != 'all':
             query.filter('driver =', driver_name)
@@ -131,7 +181,7 @@ class lap_datastore_interface:
     def get_best_times(self, track_name, driver_name='all', max_num_times=10):
 
         query = lap_record.all()
-        query.ancestor(self._root_node).filter('track =', track_name)
+        query.ancestor(self.league_entity).filter('track =', track_name)
 
         if driver_name != 'all':
             query.filter('driver =', driver_name)
