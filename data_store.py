@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 from google.appengine.ext import db
+import config
 
 
 class league (db.Model):
+    date = db.DateTimeProperty(auto_now_add=True)
+
+
+class track (db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
 
 
@@ -24,14 +29,28 @@ class lap_datastore_interface:
 
 #public functions
     def add_lap_time(self, lap_details):
+        if len(lap_details) < 6:
+            return
+
+        track_name = lap_details[2]
         #create lap object
-        new_lr = lap_record(parent=self._root_node)
+        track_k = db.Key.from_path('league', config.root_node(), 'track', track_name)
+        track_entity = db.get(track_k)
+        if track_entity is None:
+            new_track = track(parent=self._root_node, key_name=track_name)
+            new_track.put()
+            lap_parent = new_track
+        else:
+            lap_parent = self._root_node
+
+        new_lr = lap_record(parent=lap_parent)
 
         new_lr.driver = lap_details[0]
-        new_lr.track = lap_details[1]
-        new_lr.first_sector = lap_details[2]
-        new_lr.second_sector = lap_details[3]
-        new_lr.total_time = lap_details[4]
+        new_lr.car = lap_details[1]
+        new_lr.track = track_name
+        new_lr.first_sector = lap_details[3]
+        new_lr.second_sector = lap_details[4]
+        new_lr.total_time = lap_details[5]
 
         new_lr.put()
 

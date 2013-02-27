@@ -2,6 +2,8 @@ import logging
 from google.appengine.ext.webapp import template
 
 import handler
+import data_store
+import config
 
 # handler class for the admin functions
 
@@ -50,14 +52,17 @@ class handler(handler.hdlr):
         if url_ext.startswith("lap_insert"):
             logging.info("lap time submitted")
 
+            db_if = data_store.lap_datastore_interface(config.root_node())
+
             lap_details.append(self.request.get("driverName"))
             lap_details.append(self.request.get("carName"))
             lap_details.append(self.request.get("trackName"))
             lap_details.append(self.request.get("firstSector"))
             lap_details.append(self.request.get("secondSector"))
-            lap_details.append(self.request.get("thirdSector"))
             lap_details.append(self.request.get("totalTime"))
 
             logging.info(str(lap_details))
+
+            db_if.add_lap_time(lap_details)
 
         self.redirect('/admin/')
