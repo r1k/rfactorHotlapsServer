@@ -20,19 +20,27 @@ class hdlr(webapp2.RequestHandler):
 
     def render(self, content):
         self.response.out.write('<!DOCTYPE html>\n')
+
         self.response.out.write(
                 template.render('template_html/html_head_decl.html',
                                 self.head_params))
+
         self.response.out.write('<html><body>\n<div id="wrap">')
+
         self.response.out.write(
                 template.render('template_html/nav_bar.html',
                                 self.nav_bar_params))
+
         self.response.out.write(content)
+
         self.response.out.write('</div>\n')
+
         self.response.out.write(
             template.render('template_html/footer.html', {}))
+
         self.response.out.write(
             template.render('template_html/javascript_decl.html', {}))
+
         self.response.out.write('</body></html>')
 
     def check_for_root(self):

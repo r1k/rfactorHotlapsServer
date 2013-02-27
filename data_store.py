@@ -96,7 +96,7 @@ class tracks:
             self.league_entity = lge
 
     def get_by_name(self, track_name):
-        track_key = db.Key.from_path('league', self.league_entity.key().name(),
+        track_key = db.Key.from_path('league', self.league_entity.get_name(),
                                      'track', track_name)
         return db.get(track_key)
 
@@ -115,6 +115,43 @@ class tracks:
         tr = track(parent=self.league_entity, key_name=track_name)
         tr.put()
         return tr
+
+
+class carclass:
+    track_entity = None
+
+    def __init__(self, *args):
+        if (len(args) > 1) and isinstance(args[0], str):
+            #assume we were give a list of parent names
+            track_key = db.Key.from_path('league', args[0],
+                                         'track', args[1])
+            self.track_entity = db.get(track_key)
+        elif (len(args) == 1) and isinstance(args[0], track):
+            #assume we were given a parent object
+            self.track_entity = args[0]
+
+    def get_by_name(self, carclass_name):
+        league_parent = self.track_entity.key.parent().get()
+        cclass_key = db.Key.from_path('league', league_parent.get_name(),
+                                      'track', self.track_entity.get_name(),
+                                      'car_class', carclass_name)
+        return db.get(cclass_key)
+
+    def get_all(self):
+        query = db.Query(car_class)
+        query.ancestor(self.track_entity)
+        class_list = query.run()
+        return set(class_list)
+
+    def get_all_names(self):
+        class_list = self.get_all()
+        class_names = [x.get_name() for x in class_list]
+        return set(class_names)
+
+    def add_new(self, class_name):
+        cc = car_class(parent=self.track_entity, key_name=class_name)
+        cc.put()
+        return cc
 
 
 class interface:

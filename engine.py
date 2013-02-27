@@ -71,8 +71,9 @@ def credits_handler(url_ext):
 
 
 def charts_handler(url_ext):
+    logging.debug("charts_handler")
 
-    temp = ""
+    content = ""
 
     if len(url_ext) == 0:
         #generate html containing top times for each track found
@@ -83,7 +84,7 @@ def charts_handler(url_ext):
             #temp += template.render('template_html/track_result.html', {})
 
     elif url_ext.startswith('track'):
-        #generate list of times for a specific track
+        #generate list of car classes for a specific track
         pass
 
     elif url_ext.startswith('tanddhist'):
@@ -96,7 +97,7 @@ def charts_handler(url_ext):
             tr = sup.track_results(lap_times)
             logging.debug(str(tr))
 
-    return temp
+    return content
 
 
 class urlHandler(handler.hdlr):
