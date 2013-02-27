@@ -20,20 +20,20 @@ class hdlr(webapp2.RequestHandler):
 
     def render(self, content):
         self.response.out.write('<!DOCTYPE html>\n')
-        self.response.out.write(template.render('template_html/html_head_decl.html', self.head_params))
+        self.response.out.write(
+                template.render('template_html/html_head_decl.html',
+                                self.head_params))
         self.response.out.write('<html><body>\n<div id="wrap">')
-        self.response.out.write(template.render('template_html/nav_bar.html', self.nav_bar_params))
+        self.response.out.write(
+                template.render('template_html/nav_bar.html',
+                                self.nav_bar_params))
         self.response.out.write(content)
         self.response.out.write('</div>\n')
-        self.response.out.write(template.render('template_html/footer.html', {}))
-        self.response.out.write(template.render('template_html/javascript_decl.html', {}))
+        self.response.out.write(
+            template.render('template_html/footer.html', {}))
+        self.response.out.write(
+            template.render('template_html/javascript_decl.html', {}))
         self.response.out.write('</body></html>')
 
     def check_for_root(self):
-        if not data_store.league.get_by_key_name(config.root_node()):
-            # Populate db on first run
-            logging.debug("Creating the root league node")
-            root = data_store.league(key_name=config.root_node())
-            root.put()
-        else:
-            logging.debug("root node exists")
+        data_store.leagues().add_new(config.root_node())
