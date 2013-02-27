@@ -52,9 +52,10 @@ class handler(handler.hdlr):
         if url_ext.startswith("lap_insert"):
             logging.info("lap time submitted")
 
-            db_if = data_store.lap_datastore_interface(config.root_node())
+            db_if = data_store.interface(config.root_node())
 
             lap_details.append(self.request.get("driverName"))
+            lap_details.append(self.request.get("carClass"))
             lap_details.append(self.request.get("carName"))
             lap_details.append(self.request.get("trackName"))
             lap_details.append(float(self.request.get("firstSector")))
