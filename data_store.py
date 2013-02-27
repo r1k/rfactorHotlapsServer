@@ -191,7 +191,7 @@ class interface:
         new_lr.put()
         logging.info('complete the put')
 
-    def get_lap_times(self, track_name, driver_name='all'):
+    def get_lap_times(self, track_name, car_class_name, driver_name='all'):
 
         query = lap_record.all()
         query.ancestor(self.league_entity).filter('track =', track_name)
@@ -203,7 +203,10 @@ class interface:
 
         return list(query)
 
-    def get_lap_times_by_date(self, track_name, driver_name='all'):
+    def get_lap_times_by_date(self,
+                              track_name,
+                              car_class_name,
+                              driver_name='all'):
 
         query = lap_record.all()
         query.ancestor(self.league_entity).filter('track =', track_name)
@@ -215,7 +218,11 @@ class interface:
 
         return list(query)
 
-    def get_best_times(self, track_name, driver_name='all', max_num_times=10):
+    def get_best_times(self,
+                       track_name,
+                       car_class_name,
+                       driver_name='all',
+                       max_num_times=10):
 
         query = lap_record.all()
         query.ancestor(self.league_entity).filter('track =', track_name)
