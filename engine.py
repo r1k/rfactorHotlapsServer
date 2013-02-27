@@ -78,7 +78,7 @@ def charts_handler(url_ext):
 
     if len(url_ext) == 0:
         #generate html containing top times for each track found
-        tracks = db_if.get_tracks()
+        tracks = db_if.get_track_names()
         logging.debug('track list')
         for track in tracks:
             logging.debug(track)

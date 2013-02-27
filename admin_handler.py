@@ -57,9 +57,9 @@ class handler(handler.hdlr):
             lap_details.append(self.request.get("driverName"))
             lap_details.append(self.request.get("carName"))
             lap_details.append(self.request.get("trackName"))
-            lap_details.append(self.request.get("firstSector"))
-            lap_details.append(self.request.get("secondSector"))
-            lap_details.append(self.request.get("totalTime"))
+            lap_details.append(float(self.request.get("firstSector")))
+            lap_details.append(float(self.request.get("secondSector")))
+            lap_details.append(float(self.request.get("totalTime")))
 
             logging.info(str(lap_details))
 

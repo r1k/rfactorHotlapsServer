@@ -1,14 +1,21 @@
 #!/usr/bin/env python
 from google.appengine.ext import db
 import config
+import logging
 
 
 class league (db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
 
+    def get_name(self):
+        return self.key().name()
+
 
 class track (db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
+
+    def get_name(self):
+        return self.key().name()
 
 
 class lap_record(db.Model):
@@ -18,14 +25,35 @@ class lap_record(db.Model):
     car = db.StringProperty(required=True)
     track = db.StringProperty(required=True)
 
-    first_sector = db.TimeProperty()
-    second_sector = db.TimeProperty()
-    total_time = db.TimeProperty(required=True)
+    first_sector = db.FloatProperty()
+    second_sector = db.FloatProperty()
+    total_time = db.FloatProperty(required=True)
+
+
+def get_league_by_name(self, league_n=config.root_node()):
+    return league.get_by_key_name(league_n)
+
+
+def get_leagues(self):
+    query = db.Query(league)
+    league_list = query.run()
+    leagues = set(league_list)
+    return leagues
+
+
+def get_league_names(self):
+    league_list = self.get_leagues()
+    league_names = [x.get_name() for x in league_list]
+    leagues = set(league_names)
+    return leagues
 
 
 class lap_datastore_interface:
 
     root_node = None
+
+    def __init__(self, lge):
+        self._root_node = get_league_by_name(lge)
 
 #public functions
     def add_lap_time(self, lap_details):
@@ -34,34 +62,47 @@ class lap_datastore_interface:
 
         track_name = lap_details[2]
         #create lap object
-        track_k = db.Key.from_path('league', config.root_node(), 'track', track_name)
-        track_entity = db.get(track_k)
+        track_entity = self.get_track_by_name(track_name)
         if track_entity is None:
-            new_track = track(parent=self._root_node, key_name=track_name)
-            new_track.put()
-            lap_parent = new_track
+            new_track = self.add_track(track_name)
+            lap_parent_key = new_track.key()
         else:
-            lap_parent = self._root_node
+            lap_parent_key = track_entity.key()
 
-        new_lr = lap_record(parent=lap_parent)
+        logging.info('create a new lap_record object')
+        new_lr = lap_record(parent=lap_parent_key,
+                            driver=lap_details[0],
+                            car=lap_details[1],
+                            track=track_name,
+                            first_sector=lap_details[3],
+                            second_sector=lap_details[4],
+                            total_time=lap_details[5])
 
-        new_lr.driver = lap_details[0]
-        new_lr.car = lap_details[1]
-        new_lr.track = track_name
-        new_lr.first_sector = lap_details[3]
-        new_lr.second_sector = lap_details[4]
-        new_lr.total_time = lap_details[5]
-
+        logging.info('calling put on new_lr')
         new_lr.put()
+        logging.info('complete the put')
+
+    def add_track(self, track_n):
+        tr = track(parent=self._root_node, key_name=track_n)
+        tr.put()
+        return tr
 
     def get_tracks(self):
-        query = db.Query(lap_record, projection=('track',))
+        query = db.Query(track)
         query.ancestor(self._root_node)
-        query.order('track')
-
-        tracks = set(list(query.run()))
-
+        track_list = query.run()
+        tracks = set(track_list)
         return tracks
+
+    def get_track_names(self):
+        track_list = self.get_tracks()
+        track_names = [x.get_name() for x in track_list]
+        tracks = set(track_names)
+        return tracks
+
+    def get_track_by_name(self, track_n):
+        track_k = db.Key.from_path('league', self._root_node.get_name(), 'track', track_n)
+        return db.get(track_k)
 
     def get_lap_times(self, track_name, driver_name='all'):
 
@@ -114,7 +155,3 @@ class lap_datastore_interface:
                 break
 
         return fastest_laps_list
-
-    def __init__(self, lge):
-
-        self._root_node = league.get_by_key_name(lge)
