@@ -18,6 +18,9 @@ class league (ndb.Model):
     def get_name(self):
         return self.key.string_id()
 
+    def __str__(self):
+        return 'league: ' + self.get_name()
+
 
 class track (ndb.Model):
     """
@@ -29,6 +32,9 @@ class track (ndb.Model):
     def get_name(self):
         return self.key.string_id()
 
+    def __str__(self):
+        return 'track: ' + self.get_name()
+
 
 class car_class(ndb.Model):
     """
@@ -39,6 +45,9 @@ class car_class(ndb.Model):
 
     def get_name(self):
         return self.key.string_id()
+
+    def __str__(self):
+        return 'car_class: ' + self.get_name()
 
 
 class lap_record(ndb.Model):
@@ -55,6 +64,10 @@ class lap_record(ndb.Model):
     first_sector = ndb.FloatProperty()
     second_sector = ndb.FloatProperty()
     total_time = ndb.FloatProperty(required=True)
+
+    def __str__(self):
+        return 'lap: ' + self.driver + ' ' + self.track + \
+               ' ' + self.car + ' ' + str(self.total_time)
 
 ################################################
 #class to use to access the data objects
@@ -195,21 +208,25 @@ class interface:
                             total_time=lap_details['totalTime'])
         new_lr.put()
 
-    def get_lap_times(self, track_name, car_class_name, driver_name='all'):
+    def get_lap_times(self,
+                      track_name,
+                      car_class_name,
+                      driver_name='all'):
 
-        #query = lap_record.query()
-        #query.ancestor(self.league_entity).filter('track =', track_name)
-
-        #if driver_name != 'all':
-            #query.filter('driver =', driver_name)
-
-        #query.order('total_time')
-
-        #return list(query)
-        pass
+        ancestor_key = ndb.Key('league', self.league_entity.get_name(),
+                               'track', track_name,
+                               'car_class', car_class_name)
+        q = lap_record.query(ancestor=ancestor_key)
+        q.order(-lap_record.total_time)
+        return q.fetch(5)
 
     def get_lap_times_by_date(self,
                               track_name,
                               car_class_name,
                               driver_name='all'):
-        pass
+        ancestor_key = ndb.Key('league', self.league_entity.get_name(),
+                               'track', track_name,
+                               'car_class', car_class_name)
+        q = lap_record.query(ancestor=ancestor_key)
+        q.order(-lap_record.date)
+        return q.fetch(5)

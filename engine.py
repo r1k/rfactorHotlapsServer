@@ -80,9 +80,22 @@ def charts_handler(url_ext):
         trax = data_store.tracks(config.root_node())
 
         logging.debug('track list')
-        for track in trax.get_all_names():
-            logging.debug(track)
-            #temp += template.render('template_html/track_result.html', {})
+        content += 'Track List \n'
+        for t in trax.get_all():
+            logging.debug(t.get_name())
+            content += t.get_name() + '\n'
+            cclass = data_store.carclass(t)
+            for cc in cclass.get_all_names():
+                logging.debug(cc)
+                content += cc + '\n'
+                db_if = data_store.interface(trax.league_entity)
+                laps = db_if.get_lap_times(t.get_name(), cc)
+                for l in laps:
+                    logging.debug(l)
+                    result = sup.lap_result.from_lap_record(l)
+                    content += str(result) + '\n'
+        #content += template.render('template_html/track_result.html',
+                                   #{'result': result})
 
     elif url_ext.startswith('track'):
         #generate list of car classes for a specific track
