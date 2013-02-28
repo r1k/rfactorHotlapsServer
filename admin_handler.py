@@ -4,6 +4,7 @@ from google.appengine.ext.webapp import template
 import handler
 import data_store
 import config
+import support_functions as sup
 
 # handler class for the admin functions
 
@@ -25,12 +26,24 @@ class handler(handler.hdlr):
             url_ext = url_ext[1:]
 
         content = template.render('template_html/branding_bar.html',
-                                 {'page': page_txt})
+                                  {'page': page_txt})
 
         if url_ext.startswith('lap_insert'):
             logging.debug("lap_insert")
             content += self.lap_insert()
 
+        elif url_ext.startswith('insert_dummy_data'):
+            logging.info("Inserting Dummy Data")
+
+            db_if = data_store.interface(config.root_node())
+
+            dummy_data = sup.create_dictionary(config.input_labels(),
+                                               config.dummy_test_data())
+            for data in dummy_data:
+                db_if.add_lap_time(data)
+
+            self.redirect('/admin/')
+            return
         else:
             content += template.render('template_html/admin.html', {})
 
@@ -54,13 +67,13 @@ class handler(handler.hdlr):
 
             db_if = data_store.interface(config.root_node())
 
-            lap_details.append(self.request.get("driverName"))
-            lap_details.append(self.request.get("carClass"))
-            lap_details.append(self.request.get("carName"))
-            lap_details.append(self.request.get("trackName"))
-            lap_details.append(float(self.request.get("firstSector")))
-            lap_details.append(float(self.request.get("secondSector")))
-            lap_details.append(float(self.request.get("totalTime")))
+            lap_details['driverName'] = self.request.get("driverName")
+            lap_details['carClass'] = self.request.get("carClass")
+            lap_details['carName'] = self.request.get("carName")
+            lap_details['trackName'] = self.request.get("trackName")
+            lap_details['firstSec'] = float(self.request.get("firstSector"))
+            lap_details['secondSec'] = float(self.request.get("secondSector"))
+            lap_details['totalTime'] = float(self.request.get("totalTime"))
 
             logging.info(str(lap_details))
 

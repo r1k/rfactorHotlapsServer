@@ -143,4 +143,3 @@ class urlHandler(handler.hdlr):
 
         self.nav_bar_params = {url_root: active_string}
         self.render(content)
-

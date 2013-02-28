@@ -5,6 +5,20 @@ import datetime as dt
 from data_store import lap_record
 
 
+def create_dictionary(labels, data_lists):
+    temp = []
+    for data in data_lists:
+        if len(labels) != len(data):
+            temp.append({})
+            continue
+        else:
+            temp2 = {}
+            for x in range(len(labels)):
+                temp2[labels[x]] = data[x]
+            temp.append(temp2)
+    return temp
+
+
 def unique_result(array):
     return set(list(array))
 
