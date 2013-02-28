@@ -217,7 +217,7 @@ class interface:
                                'track', track_name,
                                'car_class', car_class_name)
         q = lap_record.query(ancestor=ancestor_key)
-        q.order(-lap_record.total_time)
+        q.order(lap_record.total_time)
         return q.fetch(5)
 
     def get_lap_times_by_date(self,
@@ -228,5 +228,5 @@ class interface:
                                'track', track_name,
                                'car_class', car_class_name)
         q = lap_record.query(ancestor=ancestor_key)
-        q.order(-lap_record.date)
+        q.order(lap_record.date)
         return q.fetch(5)
