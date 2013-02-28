@@ -77,9 +77,10 @@ def charts_handler(url_ext):
 
     if len(url_ext) == 0:
         #generate html containing top times for each track found
-        tracks = data_store.tracks(config.root_node()).get_all_names()
+        trax = data_store.tracks(config.root_node())
+
         logging.debug('track list')
-        for track in tracks:
+        for track in trax.get_all_names():
             logging.debug(track)
             #temp += template.render('template_html/track_result.html', {})
 

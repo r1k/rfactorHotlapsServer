@@ -94,6 +94,8 @@ class tracks:
             self.league_entity = leagues().get_by_name(lge)
         elif isinstance(lge, league):
             self.league_entity = lge
+        else:
+            logging.error("Not a league object")
 
     def get_by_name(self, track_name):
         track_key = ndb.Key('league', self.league_entity.get_name(),
@@ -101,10 +103,9 @@ class tracks:
         return track_key.get()
 
     def get_all(self):
-        query = track.query()
-        query.ancestor(self.league_entity)
-        track_list = query.run()
-        return set(track_list)
+        query = track.query(ancestor=self.league_entity.key)
+        track_list = [x for x in query.iter()]
+        return track_list
 
     def get_all_names(self):
         track_list = self.get_all()
@@ -138,10 +139,9 @@ class carclass:
         return cclass_key.get()
 
     def get_all(self):
-        query = ndb.Query(car_class)
-        query.ancestor(self.track_entity)
-        class_list = query.run()
-        return set(class_list)
+        query = car_class.query(ancestor=self.track_entity.key)
+        class_list = [x for x in query.iter()]
+        return class_list
 
     def get_all_names(self):
         class_list = self.get_all()
