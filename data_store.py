@@ -38,7 +38,7 @@ class car_class(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add=True)
 
     def get_name(self):
-        return self.key.name()
+        return self.key.string_id()
 
 
 class lap_record(ndb.Model):
