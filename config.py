@@ -14,14 +14,14 @@ def input_labels():
 def dummy_test_data():
 
     return [
-               ['Fluffy', 'Formula1', 'Honda', 'Silverstone', 21.2, 23.8, 45.0],
-               ['Fluffy', 'Formula1', 'Honda', 'Silverstone', 21.2, 23.6, 44.8],
-               ['r1k', 'Formula1', 'Ferrari', 'Silverstone', 21.3, 23.5, 44.8],
-               ['Fluffy', 'NASCAR', 'Ford', 'Silverstone', 41.2, 43.6, 84.8],
-               ['Fluffy', 'Formula1', 'Honda', 'Moncao', 31.2, 23.6, 54.8],
-               ['r1k', 'Formula1', 'Ferrari', 'Moncao', 31.2, 23.7, 54.9],
-               ['Fluffy', 'Formula1', 'Ferrari', 'Moncao', 31.2, 24.6, 55.8],
-               ['Fluffy', 'NASCAR', 'Ford', 'Moncao', 31.2, 23.6, 54.8],
-               ['r1k', 'NASCAR', 'Olds', 'Moncao', 31.2, 23.7, 54.9],
-               ['Fluffy', 'NASCAR', 'Chevrolet', 'Moncao', 31.2, 24.6, 55.8]
+               ['Fluffy', 'Formula1', 'Honda', 'Silverstone', 21.2, 23.8, 65.4],
+               ['Fluffy', 'Formula1', 'Honda', 'Silverstone', 21.2, 23.6, 65.3],
+               ['r1k', 'Formula1', 'Ferrari', 'Silverstone', 21.3, 23.5, 66.0],
+               ['Fluffy', 'NASCAR', 'Ford', 'Silverstone', 41.2, 43.6, 125.2],
+               ['Fluffy', 'Formula1', 'Honda', 'Moncao', 31.2, 23.6, 122.2],
+               ['r1k', 'Formula1', 'Ferrari', 'Moncao', 31.2, 23.7, 78.1],
+               ['Fluffy', 'Formula1', 'Ferrari', 'Moncao', 31.2, 24.6, 78.5],
+               ['Fluffy', 'NASCAR', 'Ford', 'Moncao', 31.2, 23.6, 88.0],
+               ['r1k', 'NASCAR', 'Olds', 'Moncao', 31.2, 23.7, 87.5],
+               ['Fluffy', 'NASCAR', 'Chevrolet', 'Moncao', 31.2, 24.6, 65.6]
            ]

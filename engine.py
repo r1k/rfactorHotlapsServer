@@ -12,7 +12,7 @@ def welcome_handler(url_ext):
     logging.debug("welcome_handler")
     page_txt = "Fluffy Dedicated Servers"
     content = template.render('template_html/branding_bar.html',
-                             {'page': page_txt})
+                              {'page': page_txt})
     content += template.render('template_html/welcome.html', {})
     return content
 
@@ -21,7 +21,7 @@ def server_handler(url_ext):
     logging.debug("server_handler")
     page_txt = "Fluffy Dedicated Servers"
     content = template.render('template_html/branding_bar.html',
-                             {'page': page_txt})
+                              {'page': page_txt})
     si = serverstatus.serverInfo()
     srvrs = si.run()
     #srvrs.append(serverstatus.server_details(
@@ -39,7 +39,7 @@ def server_handler(url_ext):
              #'Dick Trickle', '<a href="http://localhost:8080">Home</a>', '')))
     pairs = sup.pairs(srvrs)
     content += template.render('template_html/server_status.html',
-                              {'pairs': pairs})
+                               {'pairs': pairs})
     return content
 
 
@@ -47,7 +47,7 @@ def links_handler(url_ext):
     logging.debug("links_handler")
     page_txt = "Links"
     content = template.render('template_html/branding_bar.html',
-                             {'page': page_txt})
+                              {'page': page_txt})
     content += template.render('template_html/links.html', {})
     return content
 
@@ -56,7 +56,7 @@ def help_handler(url_ext):
     logging.debug("help_handler")
     page_txt = "Help"
     content = template.render('template_html/branding_bar.html',
-                             {'page': page_txt})
+                              {'page': page_txt})
     content += template.render('template_html/help.html', {})
     return content
 
@@ -65,51 +65,83 @@ def credits_handler(url_ext):
     logging.debug("credits_handler")
     page_txt = "Credits"
     content = template.render('template_html/branding_bar.html',
-                             {'page': page_txt})
+                              {'page': page_txt})
     content += template.render('template_html/credits.html', {})
     return content
 
 
 def charts_handler(url_ext):
-    logging.debug("charts_handler")
+    logging.info("charts_handler")
 
     content = ""
+    logging.info(str(url_ext))
 
-    if len(url_ext) == 0:
+    trax = data_store.tracks(config.root_node())
+    num_args = len(url_ext)
+    if num_args == 0:
         #generate html containing top times for each track found
-        trax = data_store.tracks(config.root_node())
-
-        logging.debug('track list')
-        content += 'Track List \n'
+        logging.info('list all')
         for t in trax.get_all():
-            logging.debug(t.get_name())
-            content += t.get_name() + '\n'
+            trackname = t.get_name()
+            logging.debug(trackname)
             cclass = data_store.carclass(t)
             for cc in cclass.get_all_names():
                 logging.debug(cc)
-                content += cc + '\n'
                 db_if = data_store.interface(trax.league_entity)
-                laps = db_if.get_lap_times(t.get_name(), cc)
+                laps = db_if.get_lap_times(trackname, cc)
+                result_list = []
                 for l in laps:
                     logging.debug(l)
-                    result = sup.lap_result.from_lap_record(l)
-                    content += str(result) + '\n'
-        #content += template.render('template_html/track_result.html',
-                                   #{'result': result})
+                    result_list.append(sup.lap_result.from_lap_record(l))
 
-    elif url_ext.startswith('track'):
-        #generate list of car classes for a specific track
+                result_list = sup.calculate_lap_diffs(result_list)
+                content += template.render('template_html/track_result.html',
+                                           {'result_list': result_list,
+                                            'trackname': trackname,
+                                            'carclassname': cc})
+
+    elif num_args == 1:
+        #generate list of lap times for a specific track
+        logging.info('list by track')
+        trackname = url_ext[0]
+        t = trax.get_by_name(trackname)
+        cclass = data_store.carclass(t)
+        for cc in cclass.get_all_names():
+            logging.debug(cc)
+            db_if = data_store.interface(trax.league_entity)
+            laps = db_if.get_lap_times(trackname, cc)
+            result_list = []
+            for l in laps:
+                logging.debug(l)
+                result_list.append(sup.lap_result.from_lap_record(l))
+
+            result_list = sup.calculate_lap_diffs(result_list)
+            content += template.render('template_html/track_result.html',
+                                       {'result_list': result_list,
+                                        'trackname': trackname,
+                                        'carclassname': cc})
+
+    elif num_args == 2:
+        #list all times for a specific track and car class
+        logging.info('list by track and car class')
+        trackname = url_ext[0]
+        cc = url_ext[1]
+        db_if = data_store.interface(trax.league_entity)
+        laps = db_if.get_lap_times(trackname, cc)
+        result_list = []
+        for l in laps:
+            logging.debug(l)
+            result_list.append(sup.lap_result.from_lap_record(l))
+
+        result_list = sup.calculate_lap_diffs(result_list)
+        content += template.render('template_html/track_result.html',
+                                   {'result_list': result_list,
+                                    'trackname': trackname,
+                                    'carclassname': cc})
+
+    elif num_args == 3:
+        #list all the times for a specific track, car class, and driver
         pass
-
-    elif url_ext.startswith('tanddhist'):
-        #list all times for a specific driver on a specific track
-        db_if = data_store.interface(config.root_node())
-        track_list = data_store.tracks(db_if.league_entity).get_all_names()
-
-        for t in track_list:
-            lap_times = db_if.get_best_times(t)
-            tr = sup.track_results(lap_times)
-            logging.debug(str(tr))
 
     return content
 
@@ -122,7 +154,6 @@ class urlHandler(handler.hdlr):
         super(urlHandler, self).__init__(request=request, response=response)
 
         self.handlers = {}
-
         self.handlers['welcome'] = welcome_handler
         self.handlers['servers'] = server_handler
         self.handlers['charts'] = charts_handler
@@ -131,20 +162,21 @@ class urlHandler(handler.hdlr):
         self.handlers['credits'] = credits_handler
 
     def get(self, url_ext):
+        logging.debug(url_ext)
 
         self.check_for_root()
 
-        logging.debug(url_ext)
-
         url_split = url_ext.split('/')
         url_root = url_split[0]
-        url_extras = ''.join(url_split[1:])
+        url_extras = []
+        for x in url_split[1:]:
+            if x != '':
+                url_extras.append(x)
 
-        active_string = 'class="active"'
         content = ""
 
         if (url_root in self.handlers):
-            content = self.handlers[url_root](''.join(url_extras))
+            content = self.handlers[url_root](url_extras)
         else:
             self.redirect('/r/welcome')
 
@@ -155,5 +187,5 @@ class urlHandler(handler.hdlr):
                    <meta http-equiv="expires" content="-1000">
                    <meta http-equiv="refresh" content="200">"""
 
-        self.nav_bar_params = {url_root: active_string}
+        self.nav_bar_params = {url_root: 'class="active"'}
         self.render(content)

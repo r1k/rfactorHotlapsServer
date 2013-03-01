@@ -30,11 +30,12 @@ class lap_result:
 
     driver = ''
     car = ''
-    first_sector = None
-    second_sector = None
-    third_sector = None
-    total_time = None
-
+    first_sector = 0.0
+    second_sector = 0.0
+    third_sector = 0.0
+    total_time = 0.0
+    behind = 0.0
+    behind_colour = '"red"'
     date = None
 
     def __init__(self, driver, car,
@@ -65,6 +66,18 @@ class lap_result:
     def __str__(self):
         return 'lap result: ' + self.driver + \
                ' ' + self.car + ' ' + str(self.total_time)
+
+
+def calculate_lap_diffs(results):
+    fastest_time = results[0].total_time
+    for r in results:
+        r.behind = fastest_time - r.total_time
+        if r.behind == 0.0:
+            r.behind_colour = '""'
+        else:
+            r.behind_colour = '"red"'
+
+    return results
 
 
 class track_results:
