@@ -81,11 +81,8 @@ def calculate_lap_diffs(results):
 
 
 class track_results:
-
     track_name = ''
-
     result_list = []
-
     fastest_lap_time = None
 
     def __init__(self, lap_record_list):
@@ -104,7 +101,5 @@ class track_results:
                 continue
             else:
                 lap = lap_result.from_lap_record(x)
-
                 lap.behind = lap.total_time - self.fastest_lap_time
-
                 self.result_list.append()

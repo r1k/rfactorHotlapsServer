@@ -18,4 +18,10 @@ indexes:
 - kind: lap_record
   ancestor: yes
   properties:
+  - name: total_time
+  - name: date
+
+- kind: lap_record
+  ancestor: yes
+  properties:
   - name: track

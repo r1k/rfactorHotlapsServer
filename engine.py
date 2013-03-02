@@ -4,8 +4,6 @@ from google.appengine.ext.webapp import template
 import handler
 import serverstatus
 import support_functions as sup
-import data_store
-import config
 
 
 def welcome_handler(url_ext):
@@ -70,82 +68,6 @@ def credits_handler(url_ext):
     return content
 
 
-def charts_handler(url_ext):
-    logging.info("charts_handler")
-
-    content = ""
-    logging.info(str(url_ext))
-
-    trax = data_store.tracks(config.root_node())
-    num_args = len(url_ext)
-    if num_args == 0:
-        #generate html containing top times for each track found
-        logging.info('list all')
-        for t in trax.get_all():
-            trackname = t.get_name()
-            logging.debug(trackname)
-            cclass = data_store.carclass(t)
-            for cc in cclass.get_all_names():
-                logging.debug(cc)
-                db_if = data_store.interface(trax.league_entity)
-                laps = db_if.get_lap_times(trackname, cc)
-                result_list = []
-                for l in laps:
-                    logging.debug(l)
-                    result_list.append(sup.lap_result.from_lap_record(l))
-
-                result_list = sup.calculate_lap_diffs(result_list)
-                content += template.render('template_html/track_result.html',
-                                           {'result_list': result_list,
-                                            'trackname': trackname,
-                                            'carclassname': cc})
-
-    elif num_args == 1:
-        #generate list of lap times for a specific track
-        logging.info('list by track')
-        trackname = url_ext[0]
-        t = trax.get_by_name(trackname)
-        cclass = data_store.carclass(t)
-        for cc in cclass.get_all_names():
-            logging.debug(cc)
-            db_if = data_store.interface(trax.league_entity)
-            laps = db_if.get_lap_times(trackname, cc)
-            result_list = []
-            for l in laps:
-                logging.debug(l)
-                result_list.append(sup.lap_result.from_lap_record(l))
-
-            result_list = sup.calculate_lap_diffs(result_list)
-            content += template.render('template_html/track_result.html',
-                                       {'result_list': result_list,
-                                        'trackname': trackname,
-                                        'carclassname': cc})
-
-    elif num_args == 2:
-        #list all times for a specific track and car class
-        logging.info('list by track and car class')
-        trackname = url_ext[0]
-        cc = url_ext[1]
-        db_if = data_store.interface(trax.league_entity)
-        laps = db_if.get_lap_times(trackname, cc)
-        result_list = []
-        for l in laps:
-            logging.debug(l)
-            result_list.append(sup.lap_result.from_lap_record(l))
-
-        result_list = sup.calculate_lap_diffs(result_list)
-        content += template.render('template_html/track_result.html',
-                                   {'result_list': result_list,
-                                    'trackname': trackname,
-                                    'carclassname': cc})
-
-    elif num_args == 3:
-        #list all the times for a specific track, car class, and driver
-        pass
-
-    return content
-
-
 class urlHandler(handler.hdlr):
 
     handlers = {}
@@ -156,7 +78,6 @@ class urlHandler(handler.hdlr):
         self.handlers = {}
         self.handlers['welcome'] = welcome_handler
         self.handlers['servers'] = server_handler
-        self.handlers['charts'] = charts_handler
         self.handlers['links'] = links_handler
         self.handlers['help'] = help_handler
         self.handlers['credits'] = credits_handler

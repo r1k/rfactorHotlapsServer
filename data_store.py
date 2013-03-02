@@ -101,11 +101,14 @@ class leagues:
 
 class tracks:
     league_entity = None
+    league_name = ""
 
     def __init__(self, lge):
         if isinstance(lge, str):
+            self.league_name = lge
             self.league_entity = leagues().get_by_name(lge)
         elif isinstance(lge, league):
+            self.league_name = lge.get_name()
             self.league_entity = lge
         else:
             logging.error("Not a league object")
@@ -133,16 +136,19 @@ class tracks:
 
 class carclass:
     track_entity = None
+    track_name = ""
 
     def __init__(self, *args):
         if (len(args) > 1) and isinstance(args[0], str):
             #assume we were give a list of parent names
+            self.track_name = args[1]
             track_key = ndb.Key('league', args[0],
                                 'track', args[1])
             self.track_entity = track_key.get()
         elif (len(args) == 1) and isinstance(args[0], track):
             #assume we were given a parent object
             self.track_entity = args[0]
+            self.track_name = args[0].get_name()
 
     def get_by_name(self, carclass_name):
         league_parent = self.track_entity.key.parent().get()
@@ -211,21 +217,25 @@ class interface:
     def get_lap_times(self,
                       track_name,
                       car_class_name,
+                      num_results=5,
                       driver_name='all'):
 
         ancestor_key = ndb.Key('league', self.league_entity.get_name(),
                                'track', track_name,
                                'car_class', car_class_name)
-        q = lap_record.query(ancestor=ancestor_key).order(lap_record.total_time)
-        return q.fetch(5)
+        q = lap_record.query(ancestor=ancestor_key)\
+                             .order(lap_record.total_time)\
+                             .order(lap_record.date)
+        return q.fetch(num_results)
 
     def get_lap_times_by_date(self,
                               track_name,
                               car_class_name,
+                              num_results=5,
                               driver_name='all'):
         ancestor_key = ndb.Key('league', self.league_entity.get_name(),
                                'track', track_name,
                                'car_class', car_class_name)
-        q = lap_record.query(ancestor=ancestor_key)
-        q.order(lap_record.date)
-        return q.fetch(5)
+        q = lap_record.query(ancestor=ancestor_key)\
+                             .order(lap_record.date)
+        return q.fetch(num_results)
