@@ -57,9 +57,7 @@ class lap_record(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add=True)
 
     driver = ndb.StringProperty(required=True)
-    car_class = ndb.StringProperty(required=True)
     car = ndb.StringProperty(required=True)
-    track = ndb.StringProperty(required=True)
 
     first_sector = ndb.FloatProperty()
     second_sector = ndb.FloatProperty()
@@ -68,6 +66,20 @@ class lap_record(ndb.Model):
     def __str__(self):
         return 'lap: ' + self.driver + ' ' + self.track + \
                ' ' + self.car + ' ' + str(self.total_time)
+
+
+class fastest_lap(ndb.Model):
+    """
+        parent is the car class just like lap_record.
+        There is one of these per driver per car class per
+        track.
+        it contains a refernce to the actual fastest lap lap_record
+        for that driver
+    """
+    driver = ndb.StringProperty(required=True)
+    lap = ndb.KeyProperty(kind=lap_record)
+    #total_time = ndb.FloatProperty(required=True)
+
 
 ################################################
 #class to use to access the data objects
@@ -206,13 +218,14 @@ class interface:
         #create lap object
         new_lr = lap_record(parent=car_class_entity.key,
                             driver=lap_details['driverName'],
-                            car_class=car_class_name,
                             car=lap_details['carName'],
-                            track=track_name,
                             first_sector=lap_details['firstSec'],
                             second_sector=lap_details['secondSec'],
                             total_time=lap_details['totalTime'])
         new_lr.put()
+
+        #go through the fastest laps if not present add
+        #if present update to newewst
 
     def get_lap_times(self,
                       track_name,
