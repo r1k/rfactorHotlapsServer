@@ -64,7 +64,7 @@ class lap_record(ndb.Model):
     total_time = ndb.FloatProperty(required=True)
 
     def __str__(self):
-        return 'lap: ' + self.driver + ' ' + self.track + \
+        return 'lap: ' + self.driver + ' ' +\
                ' ' + self.car + ' ' + str(self.total_time)
 
 
@@ -76,9 +76,10 @@ class fastest_lap(ndb.Model):
         it contains a refernce to the actual fastest lap lap_record
         for that driver
     """
+    lap = ndb.KeyProperty(kind='lap_record', required=True)
+    # These are needed to be able to filter
     driver = ndb.StringProperty(required=True)
-    lap = ndb.KeyProperty(kind=lap_record)
-    #total_time = ndb.FloatProperty(required=True)
+    total_time = ndb.FloatProperty(required=True)
 
 
 ################################################
@@ -216,16 +217,34 @@ class interface:
 
         logging.info('create a new lap_record object')
         #create lap object
+        driverName = lap_details['driverName']
+        totalTime = lap_details['totalTime']
         new_lr = lap_record(parent=car_class_entity.key,
-                            driver=lap_details['driverName'],
+                            driver=driverName,
                             car=lap_details['carName'],
                             first_sector=lap_details['firstSec'],
                             second_sector=lap_details['secondSec'],
-                            total_time=lap_details['totalTime'])
+                            total_time=totalTime)
         new_lr.put()
-
+        new_key = new_lr.key
         #go through the fastest laps if not present add
         #if present update to newewst
+        flq = fastest_lap.query(ancestor=car_class_entity.key)\
+                               .filter(fastest_lap.driver == driverName)
+        result = flq.fetch(1)
+
+        if len(result) == 0:
+            new_fl = fastest_lap(parent=car_class_entity.key,
+                                 lap=new_key,
+                                 driver=driverName,
+                                 total_time=totalTime)
+            new_fl.put()
+        else:
+            result = result[0]
+            if totalTime < result.total_time:
+                result.lap = new_key
+                result.total_time = totalTime
+                result.put()
 
     def get_lap_times(self,
                       track_name,
@@ -239,6 +258,19 @@ class interface:
         q = lap_record.query(ancestor=ancestor_key)\
                              .order(lap_record.total_time)\
                              .order(lap_record.date)
+        return q.fetch(num_results)
+
+    def get_fastest_lap_times(self,
+                              track_name,
+                              car_class_name,
+                              num_results=5,
+                              driver_name='all'):
+
+        ancestor_key = ndb.Key('league', self.league_entity.get_name(),
+                               'track', track_name,
+                               'car_class', car_class_name)
+        q = fastest_lap.query(ancestor=ancestor_key)\
+                              .order(fastest_lap.total_time)
         return q.fetch(num_results)
 
     def get_lap_times_by_date(self,
