@@ -44,6 +44,9 @@ class handler(handler.hdlr):
 
             self.redirect('/admin/')
             return
+        elif url_ext.startswith("importfromfile"):
+            logging.debug("insert from file")
+            content += template.render('template_html/importfromfile.html', {})
         else:
             content += template.render('template_html/admin.html', {})
 
@@ -78,5 +81,8 @@ class handler(handler.hdlr):
             logging.info(str(lap_details))
 
             db_if.add_lap_time(lap_details)
+
+        elif url_ext.startswith("importfromfile"):
+            pass
 
         self.redirect('/admin/')
