@@ -14,10 +14,8 @@
         <td align="center">{{ result.first_sector|floatformat:"3" }}</td>
         <td align="center">{{ result.second_sector|floatformat:"3" }}</td>
         <td align="center">{{ result.third_sector|floatformat:"3" }}</td>
-        <td align="center">
-            <a style="color:white" href="{{ driver_url_base }}{{ result.driver }}" title="Cick to see all recorded best laps by {{ results.driver }} for this track and vehicle class">{{ result.total_time|floatformat:"3" }}</a>
-        </td>
-        <td align="center">(<font color={{ result.behind_colour|safe }}>{{ result.behind|floatformat:"3" }}</font>)</td>
+        <td align="center">{{ result.total_time|floatformat:"3" }}</a></td>
+        <td align="center">{{ result.date|date:"m/d/y h:i" }}</td>
         </tr>
         {% endfor %}
     </table>

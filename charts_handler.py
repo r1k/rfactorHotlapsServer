@@ -7,33 +7,59 @@ import config
 import support_functions as sup
 
 
-def genResultList(l_name, t_name, c_name):
-    laps = data_store.interface(l_name).get_lap_times(t_name, c_name)
+def genResultList(l_name,
+                  t_name,
+                  c_name,
+                  d_name='everyone',):
+    laps = data_store.interface(l_name)\
+                .get_lap_times(t_name, c_name, driver_name=d_name)
     return sup.calculate_lap_diffs(
                 [sup.lap_result.from_lap_record(l) for l in laps])
 
 
-def genFastestResultList(l_name, t_name, c_name):
-    laps = data_store.interface(l_name).get_fastest_lap_times(t_name, c_name)
+def genFastestResultList(l_name,
+                         t_name,
+                         c_name,
+                         d_name='everyone',):
+    laps = data_store.interface(l_name)\
+                .get_fastest_lap_times(t_name, c_name, driver_name=d_name)
     return sup.calculate_lap_diffs(
                 [sup.lap_result.from_lap_record(l.lap.get()) for l in laps])
 
 
-def genClassList(l_name, t_name, c_name, base_url, list_gen=genFastestResultList):
+def genClassList(l_name,
+                 t_name,
+                 c_name,
+                 base_url,
+                 d_name='everyone',
+                 list_gen=genFastestResultList,
+                 template_html='template_html/track_result.html'):
     template_params = {'trackname': t_name,
                        'carclassname': c_name,
                        'track_url': base_url + t_name,
-                       'track_clas_url': base_url + t_name + '/' + c_name}
-    template_params['result_list'] = list_gen(l_name, t_name, c_name)
-    return template.render('template_html/track_result.html', template_params)
+                       'track_clas_url': base_url + t_name + '/' + c_name,
+                       'driver_url_base': base_url + t_name + '/' + c_name + '/'}
+    template_params['result_list'] = list_gen(l_name, t_name, c_name, d_name)
+    return template.render(template_html, template_params)
 
 
-def genTrackList(l_name, t_entity, base_url, list_gen=genFastestResultList):
+def genTrackList(l_name,
+                 t_entity,
+                 base_url,
+                 d_name='everyone',
+                 list_gen=genFastestResultList,
+                 template_html='template_html/track_result.html'):
     t_name = t_entity.get_name()
     cclasses = data_store.carclass(t_entity)
     html = ""
     for c_name in cclasses.get_all_names():
-        html += genClassList(l_name, t_name, c_name, base_url, list_gen)
+        html += genClassList(l_name,
+                             t_name,
+                             c_name,
+                             base_url,
+                             d_name,
+                             list_gen,
+                             template_html)
     return html
 
 
@@ -93,6 +119,13 @@ class handler(handler.hdlr):
 
         elif num_args == 3:
             #list all the times for a specific track, car class, and driver
-            pass
+            logging.info('list by track and car class and driver')
+            content += genClassList(l_name,
+                                    url_extras[0],
+                                    url_extras[1],
+                                    base_url='../../',
+                                    d_name=url_extras[2],
+                                    list_gen=genResultList,
+                                    template_html='template_html/driver_result.html')
 
         self.render(content)

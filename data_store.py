@@ -250,27 +250,38 @@ class interface:
                       track_name,
                       car_class_name,
                       num_results=5,
-                      driver_name='all'):
+                      driver_name='everyone'):
 
         ancestor_key = ndb.Key('league', self.league_entity.get_name(),
                                'track', track_name,
                                'car_class', car_class_name)
-        q = lap_record.query(ancestor=ancestor_key)\
-                             .order(lap_record.total_time)\
-                             .order(lap_record.date)
+        if driver_name == 'everyone':
+            q = lap_record.query(ancestor=ancestor_key)\
+                                 .order(lap_record.total_time)\
+                                 .order(lap_record.date)
+        else:
+            q = lap_record.query(ancestor=ancestor_key)\
+                                 .filter(lap_record.driver == driver_name)\
+                                 .order(lap_record.date)
         return q.fetch(num_results)
 
     def get_fastest_lap_times(self,
                               track_name,
                               car_class_name,
                               num_results=5,
-                              driver_name='all'):
+                              driver_name='everyone'):
 
         ancestor_key = ndb.Key('league', self.league_entity.get_name(),
                                'track', track_name,
                                'car_class', car_class_name)
-        q = fastest_lap.query(ancestor=ancestor_key)\
-                              .order(fastest_lap.total_time)
+
+        if driver_name == 'everyone':
+            q = fastest_lap.query(ancestor=ancestor_key)\
+                                  .order(fastest_lap.total_time)
+        else:
+            q = fastest_lap.query(ancestor=ancestor_key)\
+                                  .filter(fastest_lap.driver == driver_name)\
+                                  .order(fastest_lap.total_time)
         return q.fetch(num_results)
 
     def get_lap_times_by_date(self,
