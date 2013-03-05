@@ -94,7 +94,7 @@ class handler(handler.hdlr):
             t_list = tracks_if.get_all()
             logging.debug('track list: ' + str(t_list))
             for t_entity in tracks_if.get_all():
-                logging.debug("track: " + t_entity.get_name())
+                logging.debug('track: ' + t_entity.get_name())
                 content += genTrackList(l_name,
                                         t_entity,
                                         base_url='./charts/',
