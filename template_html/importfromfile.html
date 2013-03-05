@@ -1,24 +1,21 @@
-<!-- form for manually inserting laptimes -->
-
-<div class="container"><div class="row-fluid"><div class="span10 offset1">
+<!-- form for uploading data via file -->
+<div class="container"><div class="row-fluid"><div class="span9 offset1">
 <h2>File upload for race data</h2>
-
-        <p>This is to allow a file containing race result data to be imported into the data base</p>
-<br>
+<p>This is to allow a file containing race result data to be imported into the data base</p><br>
     <form class="form-horizontal" action="importfromfile" method="post">
         <div class="fileupload fileupload-new" data-provides="fileupload">
-  <div class="input-append">
-    <div class="uneditable-input span3">
-    <i class="icon-file fileupload-exists"></i>
-        <span class="fileupload-preview"></span>
-    </div>
-        <span class="btn btn-file">
-        <span class="fileupload-new">Select file</span>
-        <span class="fileupload-exists">Change</span>
-        <input type="file" /></span>
-    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-  </div>
-
-</div>
+            <div class="input-append">
+            <!-- careful next div, i and span have to be on the same line -->
+                <div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i><span class="fileupload-preview"></span>
+                </div>
+                <span class="btn btn-file">
+                    <span class="fileupload-new">Select file</span>
+                    <span class="fileupload-exists">Change</span>
+                    <input type="file" id="file-input"/>
+                </span>
+                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                <button type="submit" class="btn btn-primary" id="upload-btn">Upload</button>
+            </div>
+        </div>
     </form>
 </div></div></div>

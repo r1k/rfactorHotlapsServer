@@ -34,11 +34,15 @@ def genClassList(l_name,
                  d_name='everyone',
                  list_gen=genFastestResultList,
                  template_html='template_html/track_result.html'):
+
+    track_url = base_url + t_name
+    class_url = track_url + '/' + c_name
+    driver_url = class_url + '/'
     template_params = {'trackname': t_name,
                        'carclassname': c_name,
-                       'track_url': base_url + t_name,
-                       'track_clas_url': base_url + t_name + '/' + c_name,
-                       'driver_url_base': base_url + t_name + '/' + c_name + '/'}
+                       'track_url': track_url,
+                       'track_clas_url': class_url,
+                       'driver_url_base': driver_url}
     template_params['result_list'] = list_gen(l_name, t_name, c_name, d_name)
     return template.render(template_html, template_params)
 
@@ -87,7 +91,8 @@ class handler(handler.hdlr):
         tracks_if = data_store.tracks(l_name)
 
         num_args = len(url_extras)
-        logging.debug("Num args: " + str(num_args) + ', list: ' + str(url_extras))
+        logging.debug("Num args: " + str(num_args) +
+                      ', list: ' + str(url_extras))
         if num_args == 0:
             #generate html containing top times for each track found
             logging.debug('list all')
@@ -121,11 +126,11 @@ class handler(handler.hdlr):
             #list all the times for a specific track, car class, and driver
             logging.info('list by track and car class and driver')
             content += genClassList(l_name,
-                                    url_extras[0],
-                                    url_extras[1],
-                                    base_url='../../',
-                                    d_name=url_extras[2],
-                                    list_gen=genResultList,
-                                    template_html='template_html/driver_result.html')
+                              url_extras[0],
+                              url_extras[1],
+                              base_url='../../',
+                              d_name=url_extras[2],
+                              list_gen=genResultList,
+                              template_html='template_html/driver_result.html')
 
         self.render(content)
