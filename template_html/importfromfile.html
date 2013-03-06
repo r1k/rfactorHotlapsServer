@@ -2,7 +2,7 @@
 <div class="container"><div class="row-fluid"><div class="span9 offset1">
 <h2>File upload for race data</h2>
 <p>This is to allow a file containing race result data to be imported into the data base</p><br>
-    <form class="form-horizontal" action="importfromfile" method="post">
+    <form class="form-horizontal" enctype="multipart/form-data" action="importfromfile" method="post">
         <div class="fileupload fileupload-new" data-provides="fileupload">
             <div class="input-append">
             <!-- careful next div, i and span have to be on the same line -->
@@ -11,7 +11,7 @@
                 <span class="btn btn-file">
                     <span class="fileupload-new">Select file</span>
                     <span class="fileupload-exists">Change</span>
-                    <input type="file" id="file-input"/>
+                    <input type="file" id="file-input" name="xmlfile"/>
                 </span>
                 <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
                 <button type="submit" class="btn btn-primary" id="upload-btn">Upload</button>

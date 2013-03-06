@@ -1,5 +1,6 @@
 import logging
 from google.appengine.ext.webapp import template
+import xml.etree.ElementTree as ET
 
 import handler
 import data_store
@@ -83,6 +84,13 @@ class handler(handler.hdlr):
             db_if.add_lap_time(lap_details)
 
         elif url_ext.startswith("importfromfile"):
-            pass
+
+            xmlfile = self.request.POST.get('xmlfile').file.read()
+            results = ET.fromstring(xmlfile)
+
+            db_if = data_store.interface(config.root_node())
+
+            for result in results:
+                db_if.add_lap_time(sup.translateXMLdictionary(result.attrib))
 
         self.redirect('/admin/')
