@@ -14,9 +14,9 @@ def genResultList(l_name,
                   d_name='everyone',):
     laps = data_store.interface(l_name)\
                 .get_lap_times(t_name, c_name, driver_name=d_name)
+    logging.debug(str(laps))
     return sup.calculate_lap_diffs(
-                [sup.lap_result.from_lap_record(l)
-                    .convertFloatsToOutputStrings() for l in laps])
+                [sup.lap_result.from_lap_record(l) for l in laps])
 
 
 def genFastestResultList(l_name,
@@ -25,9 +25,9 @@ def genFastestResultList(l_name,
                          d_name='everyone',):
     laps = data_store.interface(l_name)\
                 .get_fastest_lap_times(t_name, c_name, driver_name=d_name)
+    logging.debug(str(laps))
     return sup.calculate_lap_diffs(
-                [sup.lap_result.from_lap_record(l.lap.get())
-                    .convertFloatsToOutputStrings() for l in laps])
+                [sup.lap_result.from_lap_record(l.lap.get()) for l in laps])
 
 
 def genClassList(l_name,
@@ -47,6 +47,7 @@ def genClassList(l_name,
                        'track_clas_url': class_url,
                        'driver_url_base': driver_url}
     template_params['result_list'] = list_gen(l_name, t_name, c_name, d_name)
+    logging.debug(str(template_params['result_list']))
     return template.render(template_html, template_params)
 
 
@@ -59,6 +60,7 @@ def genTrackList(l_name,
     t_name = t_entity.get_name()
     cclasses = data_store.carclass(t_entity)
     html = ""
+    logging.debug(str(cclasses.get_all_names()))
     for c_name in cclasses.get_all_names():
         html += genClassList(l_name,
                              t_name,
@@ -105,7 +107,7 @@ class handler(handler.hdlr):
                 logging.debug('track: ' + t_entity.get_name())
                 content += genTrackList(l_name,
                                         t_entity,
-                                        base_url='./charts/',
+                                        base_url='./',
                                         list_gen=genFastestResultList)
 
         elif num_args == 1:
@@ -113,7 +115,7 @@ class handler(handler.hdlr):
             logging.info('list by track')
             content += genTrackList(l_name,
                                     tracks_if.get_by_name(url_extras[0]),
-                                    base_url='',
+                                    base_url='./',
                                     list_gen=genFastestResultList)
 
         elif num_args == 2:

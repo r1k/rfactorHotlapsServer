@@ -110,7 +110,7 @@ class track_results:
             return []
 
         if type(lap_record_list[0]) != lap_record:
-                logging.DEBUG("This need to be a list of lap_record objects")
+                logging.debug("This need to be a list of lap_record objects")
 
         self.fastest_lap_time = lap_record_list[0].total_time
         self.track_name = lap_record_list[0].track
@@ -142,12 +142,15 @@ def timeFloatFromString(time_str):
         m, s = parts[0], parts[1]
     elif parts_l == 1:
         s = parts[0]
-    h = float(h)
-    m = float(m)
-    s = float(s)
-    totalTime = (h * 3600) + (m * 60) + s
+    try:
+        h = float(h)
+        m = float(m)
+        s = float(s)
+    except ValueError:
+        logging.error("Error converting string to float")
+        return 0.0
 
-    return totalTime
+    return (h * 3600) + (m * 60) + s
 
 
 def timeStringFromFloat(time_float):
@@ -190,7 +193,7 @@ def translateXMLdictionary(result):
                   'trackName': result['trackID'],
                   'firstSec': timeFloatFromString(result['s1']),
                   'secondSec': timeFloatFromString(result['s2']),
-                  'totalTime': timeFloatFromString(result['s3']),
+                  'totalTime': timeFloatFromString(result['totalLapTime']),
                   'date': date_obj}
 
     return result_dic

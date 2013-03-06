@@ -99,7 +99,7 @@ class leagues:
     def get_all_names(self):
         league_list = self.get_all()
         league_names = [x.get_name() for x in league_list]
-        lges = set(league_names)
+        lges = league_names
         return lges
 
     def add_new(self, name):
@@ -139,7 +139,7 @@ class tracks:
     def get_all_names(self):
         track_list = self.get_all()
         track_names = [x.get_name() for x in track_list]
-        return set(track_names)
+        return track_names
 
     def add_new(self, track_name):
         tr = track(parent=self.league_entity.key, id=track_name)
@@ -178,7 +178,7 @@ class carclass:
     def get_all_names(self):
         class_list = self.get_all()
         class_names = [x.get_name() for x in class_list]
-        return set(class_names)
+        return class_names
 
     def add_new(self, class_name):
         cc = car_class(parent=self.track_entity.key, id=class_name)
