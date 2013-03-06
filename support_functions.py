@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import logging
 from data_store import lap_record
+from datetime import datetime
 
 
 def create_dictionary(labels, data_lists):
@@ -38,6 +39,18 @@ class lap_result:
     behind_colour = '"red"'
     date = None
 
+    def convertFloatsToOutputStrings(self):
+        if type(self.first_sector) is float:
+            self.first_sector = timeStringFromFloat(self.first_sector)
+        if type(self.second_sector) is float:
+            self.second_sector = timeStringFromFloat(self.second_sector)
+        if type(self.third_sector) is float:
+            self.third_sector = timeStringFromFloat(self.third_sector)
+        if type(self.total_time) is float:
+            self.total_time = timeStringFromFloat(self.total_time)
+        if type(self.behind) is float:
+            self.behind = timeStringFromFloat(self.behind)
+
     def __init__(self, driver, car,
                  first_sector, second_sector, total_time, date):
         self.driver = driver
@@ -69,6 +82,8 @@ class lap_result:
 
 
 def calculate_lap_diffs(results):
+    if results[0] is None:
+        return
     fastest_time = results[0].total_time
     for r in results:
         r.behind = fastest_time - r.total_time
@@ -103,3 +118,75 @@ class track_results:
                 lap = lap_result.from_lap_record(x)
                 lap.behind = lap.total_time - self.fastest_lap_time
                 self.result_list.append()
+
+
+def timeFloatFromString(time_str):
+    # convert time in the format h: m: s.tht
+    #                            1:22:15.657
+    # into a float of seconds
+    # TODO
+    h = 0
+    m = 0
+    s = 0.0
+    parts = time_str.split(':')
+    parts_l = len(parts)
+    if (parts_l > 3) or (parts_l < 1):
+        raise TypeError("Unkown time string format")
+    elif parts_l == 3:
+        h, m, s = parts[0], parts[1], parts[2]
+    elif parts_l == 2:
+        m, s = parts[0], parts[1]
+    elif parts_l == 1:
+        s = parts[0]
+    h = float(h)
+    m = float(m)
+    s = float(s)
+    totalTime = (h * 3600) + (m * 60) + s
+
+    return totalTime
+
+
+def timeStringFromFloat(time_float):
+    #reverse of above function
+    # convert time in the format h: m: s.tht
+    #                            1:22:15.657
+    # TODO
+    time_int = int(time_float)
+    h = time_int / 3600
+    time_int %= 3600
+    m = time_int / 60
+    time_int %= 60
+    s = time_float - (h * 3600.0) - (m * 60.0)
+
+    if h > 0:
+        h_str = "%d" % h
+        m_str = "%02d" % m
+        s_str = "%06.3f" % s
+    elif m > 0:
+        m_str = "%d" % m
+        s_str = "%06.3f" % s
+    else:
+        s_str = "%5.3f" % s
+
+    time_str = s_str
+    if m > 0:
+        time_str = m_str + ":" + time_str
+    if h > 0:
+        time_str = h_str + ":" + time_str
+    return time_str
+
+
+def translateXMLdictionary(result):
+    date_obj = datetime.strptime(result['theDate'], '%d-%m-%Y')
+#'driverName', 'carClass', 'carName',
+#'trackName', 'firstSec', 'secondSec', 'totalTime'
+    result_dic = {'driverName': result['driver'],
+                  'carClass': result['classV'],
+                  'carName': result['carName'],
+                  'trackName': result['trackID'],
+                  'firstSec': timeFloatFromString(result['s1']),
+                  'secondSec': timeFloatFromString(result['s2']),
+                  'totalTime': timeFloatFromString(result['s3']),
+                  'date': date_obj}
+
+    return result_dic

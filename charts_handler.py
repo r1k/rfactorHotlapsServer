@@ -14,7 +14,8 @@ def genResultList(l_name,
     laps = data_store.interface(l_name)\
                 .get_lap_times(t_name, c_name, driver_name=d_name)
     return sup.calculate_lap_diffs(
-                [sup.lap_result.from_lap_record(l) for l in laps])
+                [sup.lap_result.from_lap_record(l)
+                    .convertFloatsToOutputStrings() for l in laps])
 
 
 def genFastestResultList(l_name,
@@ -24,7 +25,8 @@ def genFastestResultList(l_name,
     laps = data_store.interface(l_name)\
                 .get_fastest_lap_times(t_name, c_name, driver_name=d_name)
     return sup.calculate_lap_diffs(
-                [sup.lap_result.from_lap_record(l.lap.get()) for l in laps])
+                [sup.lap_result.from_lap_record(l.lap.get())
+                    .convertFloatsToOutputStrings() for l in laps])
 
 
 def genClassList(l_name,
