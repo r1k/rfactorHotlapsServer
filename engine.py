@@ -1,4 +1,5 @@
 import logging
+import webapp2
 from google.appengine.ext.webapp import template
 
 import handler
@@ -110,3 +111,7 @@ class urlHandler(handler.hdlr):
 
         self.nav_bar_params = {url_root: 'class="active"'}
         self.render(content)
+
+
+logging.getLogger().setLevel(logging.DEBUG)
+app = webapp2.WSGIApplication([(r'/r/(.*)', urlHandler)], debug=True)

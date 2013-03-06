@@ -1,9 +1,11 @@
 import logging
+import webapp2
 from google.appengine.ext.webapp import template
 import xml.etree.ElementTree as ET
 
 import handler
 import data_store
+
 import config
 import support_functions as sup
 
@@ -94,3 +96,7 @@ class handler(handler.hdlr):
                 db_if.add_lap_time(sup.translateXMLdictionary(result.attrib))
 
         self.redirect('/admin/')
+
+
+logging.getLogger().setLevel(logging.DEBUG)
+app = webapp2.WSGIApplication([(r'/admin(.*)', handler)], debug=True)

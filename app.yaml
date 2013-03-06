@@ -7,25 +7,35 @@ threadsafe: true
 handlers:
 - url: /bootstrap
   static_dir: ./bootstrap
-  
+
 - url: /jQuery
   static_dir: ./jQuery
-  
+
 - url: /images
   static_dir: ./images
-    
+
 - url: /html
   static_dir: ./html
-    
+
 - url: /css
   static_dir: ./css
-    
+
 - url: /js
   static_dir: ./js
-  
+
 - url: /favicon\.ico
   static_files: images/favicon.png
   upload: images/favicon.png
+
+- url: /admin/.*
+  script: admin_handler.app
+  login: admin
+
+- url: /charts/.*
+  script: charts_handler.app
+
+- url: /r/.*
+  script: engine.app
 
 - url: .*
   script: rfactorHotlaps.app

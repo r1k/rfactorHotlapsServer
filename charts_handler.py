@@ -1,4 +1,5 @@
 import logging
+import webapp2
 from google.appengine.ext.webapp import template
 
 import handler
@@ -73,7 +74,7 @@ class handler(handler.hdlr):
 
     def __init__(self, request=None, response=None):
         super(handler, self).__init__(request=request, response=response)
-        logging.getLogger().setLevel(logging.INFO)
+        logging.getLogger().setLevel(logging.DEBUG)
 
     def get(self, url_ext):
         self.check_for_root()
@@ -136,3 +137,7 @@ class handler(handler.hdlr):
                               template_html='template_html/driver_result.html')
 
         self.render(content)
+
+
+logging.getLogger().setLevel(logging.DEBUG)
+app = webapp2.WSGIApplication([(r'/charts(.*)', handler)], debug=True)

@@ -3,10 +3,6 @@
 import webapp2
 from google.appengine.ext.webapp import template
 
-import engine
-import admin_handler
-import charts_handler
-import backend
 import logging
 import config
 
@@ -34,11 +30,4 @@ class OpeningPage(webapp2.RequestHandler):
 
 
 logging.getLogger().setLevel(logging.DEBUG)
-app = webapp2.WSGIApplication([
-                                ('/', OpeningPage),
-                                (r'/r/charts(.*)', charts_handler.handler),
-                                (r'/r/(.*)', engine.urlHandler),
-                                (r'/admin(.*)', admin_handler.handler),
-                                (r'/xml/(.*)', backend.XMLInterface),
-                                (r'/(.*)', OpeningPage)  # junk url collector
-                              ], debug=True)
+app = webapp2.WSGIApplication([(r'/(.*)', OpeningPage)], debug=True)
