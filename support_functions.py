@@ -82,6 +82,10 @@ class lap_result:
 
 
 def calculate_lap_diffs(results):
+    if results is None:
+        return
+    if len(results) == 0:
+        return
     if results[0] is None:
         return
     fastest_time = results[0].total_time
