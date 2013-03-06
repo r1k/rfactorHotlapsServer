@@ -225,6 +225,9 @@ class interface:
                             first_sector=lap_details['firstSec'],
                             second_sector=lap_details['secondSec'],
                             total_time=totalTime)
+        if 'date' in lap_details:
+            new_lr.date = lap_details['date']
+
         new_lr.put()
         new_key = new_lr.key
         #go through the fastest laps if not present add

@@ -1,4 +1,3 @@
-import logging
 import webapp2
 from google.appengine.ext.webapp import template
 
