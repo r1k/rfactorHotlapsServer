@@ -90,7 +90,7 @@ def calculate_lap_diffs(results):
         return
     fastest_time = results[0].total_time
     for r in results:
-        r.behind = fastest_time - r.total_time
+        r.behind = r.total_time - fastest_time
         if r.behind == 0.0:
             r.behind_colour = '""'
         else:
