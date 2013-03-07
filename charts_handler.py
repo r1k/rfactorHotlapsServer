@@ -76,7 +76,6 @@ class handler(handler.hdlr):
 
     def __init__(self, request=None, response=None):
         super(handler, self).__init__(request=request, response=response)
-        logging.getLogger().setLevel(logging.DEBUG)
 
     def get(self, url_ext):
         self.check_for_root()
@@ -112,7 +111,7 @@ class handler(handler.hdlr):
 
         elif num_args == 1:
             #generate list of lap times for a specific track
-            logging.info('list by track')
+            logging.debug('list by track')
             content += genTrackList(l_name,
                                     tracks_if.get_by_name(url_extras[0]),
                                     base_url='./',
@@ -120,7 +119,7 @@ class handler(handler.hdlr):
 
         elif num_args == 2:
             #list all times for a specific track and car class
-            logging.info('list by track and car class')
+            logging.debug('list by track and car class')
             content += genClassList(l_name,
                                     url_extras[0],
                                     url_extras[1],
@@ -129,7 +128,7 @@ class handler(handler.hdlr):
 
         elif num_args == 3:
             #list all the times for a specific track, car class, and driver
-            logging.info('list by track and car class and driver')
+            logging.debug('list by track and car class and driver')
             content += genClassList(l_name,
                               url_extras[0],
                               url_extras[1],
@@ -141,5 +140,5 @@ class handler(handler.hdlr):
         self.render(content)
 
 
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 app = webapp2.WSGIApplication([(r'/charts(.*)', handler)], debug=True)
