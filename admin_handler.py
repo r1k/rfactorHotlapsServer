@@ -12,8 +12,16 @@ import support_functions as sup
 # handler class for the admin functions
 
 
-def serversPage(args):
-    pass
+def serversPage(argsList):
+
+    if len(argsList) == 0:
+        #display list of servers and 'Add new server...' button
+    elif argsList[0] == addNew:
+        #display for to add new server
+    else:
+        #check arg to see if it matches an existing server
+        #display update/delete server page if it does
+
 
 
 class handler(handler.hdlr):
@@ -108,6 +116,7 @@ class handler(handler.hdlr):
 
             for result in results:
                 db_if.add_lap_time(sup.translateXMLdictionary(result.attrib))
+
 
         self.redirect('/admin/')
 
