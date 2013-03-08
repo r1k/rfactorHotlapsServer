@@ -1,6 +1,17 @@
 import urllib2
+from google.appengine.ext import ndb
 from HTMLParser import HTMLParser
 import logging
+
+
+class serverSetup(ndb.Model):
+    # data store object to store static data store details
+    name = ndb.StringProperty(required=True)
+
+    track_name = ndb.StringProperty()
+    car_class_name = ndb.StringProperty()
+    description = ndb.TextProperty()
+    image = ndb.BlobProperty()
 
 
 class server_details():

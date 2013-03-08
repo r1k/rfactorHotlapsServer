@@ -137,6 +137,7 @@ class handler(handler.hdlr):
                               list_gen=genResultList,
                               template_html='template_html/driver_result.html')
 
+        self.nav_bar_params = {'charts': 'class="active"'}
         self.render(content)
 
 

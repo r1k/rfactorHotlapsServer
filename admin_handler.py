@@ -12,6 +12,10 @@ import support_functions as sup
 # handler class for the admin functions
 
 
+def serversPage(args):
+    pass
+
+
 class handler(handler.hdlr):
 
     def __init__(self, request=None, response=None):
@@ -25,13 +29,21 @@ class handler(handler.hdlr):
         logging.debug(url_ext)
         page_txt = "Admin"
 
-        if url_ext.startswith('/'):
-            url_ext = url_ext[1:]
+        url_split = url_ext.split('/')
+        url_extras = []
+        for x in url_split[1:]:
+            if x != '':
+                url_extras.append(x)
+        if len(url_extras) == 0:
+            url_extras.append('menu')
 
         content = template.render('template_html/branding_bar.html',
                                   {'page': page_txt})
 
-        if url_ext.startswith('lap_insert'):
+        if url_extras[0] == 'servers':
+            content += serversPage(url_extras[1:])
+
+        elif url_ext.startswith('lap_insert'):
             logging.debug("lap_insert")
             content += self.lap_insert()
 
@@ -47,9 +59,11 @@ class handler(handler.hdlr):
 
             self.redirect('/admin/')
             return
+
         elif url_ext.startswith("importfromfile"):
             logging.debug("insert from file")
             content += template.render('template_html/importfromfile.html', {})
+
         else:
             content += template.render('template_html/admin.html', {})
 

@@ -65,7 +65,7 @@ class lap_result:
     def from_lap_record(cls, lap_record_item):
 
         if type(lap_record_item) != lap_record:
-            logging.DEBUG("Need a lap_record object here")
+            logging.debug("Need a lap_record object here")
             return
 
         lap = lap_result(lap_record_item.driver,
