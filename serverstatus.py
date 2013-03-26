@@ -14,18 +14,36 @@ class serverSetup(ndb.Model):
     image = ndb.BlobProperty()
 
 
-class server_details():
+class interface:
+    def __init__(self):
+        pass
 
-    details = []
-    name = ''
-    image = ''
-    track = ''
-    vclass = ''
-    seshtype = ''
-    seshstatus = ''
-    driverlist = ''
-    extras = 7
-    total_rows = 6
+    def getAllServers_iter(self):
+        q = serverSetup.query().order(serverSetup.name)
+        return q.iter
+
+    def getAllServers(self, num_results=5):
+        q = serverSetup.query().order(serverSetup.name)
+        return q.fetch(num_results)
+
+    def getServerByName(self, name):
+        q = serverSetup.query().filter(serverSetup.name == name)
+        return q.fetch(1)
+
+    def addServer(self, serverDetails):
+        ss = serverSetup(name=serverDetails.name)
+        # fill in other server details
+        ss.put()
+
+    def updateServer(self, server, serverDetails):
+        if server is not serverSetup:
+            logging.error('Need a serverSetup object to be able to update it')
+            return
+        # copy over all serverDetails and then push back to db
+        server.put()
+
+
+class server_details():
 
     def __init__(self, dtls):
         self.details = dtls[self.extras:]
@@ -37,6 +55,7 @@ class server_details():
         self.seshstatus = dtls[5]
         self.driverlist = dtls[6]
         self.total_rows = len(dtls) - 1
+        self.extras = 7
 
     def __str__(self):
         string = self.name + ', ' +\
@@ -73,13 +92,12 @@ class server_details():
 
 class serverParser(HTMLParser):
 
-    servers = []
-    content = []
-
-    collecting_data = 0
-    field = 0
-
-    server_url = ''
+    def __init__(self):
+        self.servers = []
+        self.content = []
+        self.collecting_data = 0
+        self.field = 0
+        self.server_url = ''
 
     def clear_vars(self):
         self.server_url = ''
@@ -113,34 +131,25 @@ class serverParser(HTMLParser):
 class serverInfo():
 
     url = 'http://nodb.homeserver.com/rfactor/serversNew.asp'
-    test_file = []
-    server_list = []
-    server_status_html = ""
 
     def __init__(self):
-
         self.server_list = []
         self.server_status_html = ""
         self.test_file = ""
 
     def run(self):
-
         self.open_url(self.url)
         self.parse_html()
-
         return self.server_list
 
     def test(self, test_filename):
-
         self.open_test_file(test_filename)
         self.parse_html()
-
         return self.server_list
 
     def open_url(self, url):
         try:
             uo = urllib2.urlopen(self.url)
-
             self.server_status_html = uo.read()
 
         except Exception:

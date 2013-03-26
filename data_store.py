@@ -3,9 +3,9 @@ from google.appengine.ext import ndb
 import config
 import logging
 
-
 ###############################################
 # database record classes
+###############################################
 
 
 class league (ndb.Model):
@@ -84,7 +84,7 @@ class fastest_lap(ndb.Model):
 
 ################################################
 #class to use to access the data objects
-
+################################################
 
 class leagues:
     def get_by_name(self, name=config.root_node()):

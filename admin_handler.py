@@ -5,36 +5,33 @@ import xml.etree.ElementTree as ET
 
 import handler
 import data_store
+import serverstatus as ss
 
 import config
 import support_functions as sup
 
-# handler class for the admin functions
-
-
-def serversPage(argsList):
-
-    if len(argsList) == 0:
-        #display list of servers and 'Add new server...' button
-    elif argsList[0] == addNew:
-        #display for to add new server
-    else:
-        #check arg to see if it matches an existing server
-        #display update/delete server page if it does
-
-
 
 class handler(handler.hdlr):
-
+    """ Handler class for the admin functions
+    """
     def __init__(self, request=None, response=None):
         super(handler, self).__init__(request=request, response=response)
+
+    def lap_insert(self):
+        return template.render('template_html/admin_lap_insert.html', {})
+
+    def serversPage(argsList):
+
+        content = template.render('template_html/admin_servers.html',
+                                  {})
+        return content
 
     def get(self, url_ext):
 
         self.check_for_root()
 
-        logging.debug("admin_handler")
-        logging.debug(url_ext)
+        logging.info("admin_handler")
+        logging.info(url_ext)
         page_txt = "Admin"
 
         url_split = url_ext.split('/')
@@ -49,13 +46,13 @@ class handler(handler.hdlr):
                                   {'page': page_txt})
 
         if url_extras[0] == 'servers':
-            content += serversPage(url_extras[1:])
+            content += self.serversPage(url_extras[1:])
 
-        elif url_ext.startswith('lap_insert'):
-            logging.debug("lap_insert")
+        elif url_extras[0] == 'lap_insert':
+            logging.info("lap_insert")
             content += self.lap_insert()
 
-        elif url_ext.startswith('insert_dummy_data'):
+        elif url_extras[0] == 'insert_dummy_data':
             logging.info("Inserting Dummy Data")
 
             db_if = data_store.interface(config.root_node())
@@ -68,7 +65,7 @@ class handler(handler.hdlr):
             self.redirect('/admin/')
             return
 
-        elif url_ext.startswith("importfromfile"):
+        elif url_extras[0] == 'importfromfile':
             logging.debug("insert from file")
             content += template.render('template_html/importfromfile.html', {})
 
@@ -76,9 +73,6 @@ class handler(handler.hdlr):
             content += template.render('template_html/admin.html', {})
 
         self.render(content)
-
-    def lap_insert(self):
-        return template.render('template_html/admin_lap_insert.html', {})
 
     def post(self, url_ext):
 
@@ -116,7 +110,6 @@ class handler(handler.hdlr):
 
             for result in results:
                 db_if.add_lap_time(sup.translateXMLdictionary(result.attrib))
-
 
         self.redirect('/admin/')
 
