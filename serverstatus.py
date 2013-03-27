@@ -7,11 +7,10 @@ import logging
 class serverSetup(ndb.Model):
     # data store object to store static data store details
     name = ndb.StringProperty(required=True)
-
     track_name = ndb.StringProperty()
     car_class_name = ndb.StringProperty()
     description = ndb.TextProperty()
-    image = ndb.BlobProperty()
+    #image = ndb.BlobProperty()
 
 
 class interface:
@@ -25,6 +24,10 @@ class interface:
     def getAllServers(self, num_results=5):
         q = serverSetup.query().order(serverSetup.name)
         return q.fetch(num_results)
+
+    def getAllServerNames(self, num_results=5):
+        q = serverSetup.query().order(serverSetup.name)
+        return q.fetch(num_results, projection=[serverSetup.name])
 
     def getServerByName(self, name):
         q = serverSetup.query().filter(serverSetup.name == name)

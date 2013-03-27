@@ -4,6 +4,18 @@ from data_store import lap_record
 from datetime import datetime
 
 
+def url_split(url):
+    url_split = url.split('/')
+    url_parts = []
+    for x in url_split:
+        if x != '':
+            url_parts.append(x)
+    # don't return a zero length array
+    if len(url_parts) == 0:
+        url_parts.append('')
+    return url_parts
+
+
 def create_dictionary(labels, data_lists):
     temp = []
     for data in data_lists:

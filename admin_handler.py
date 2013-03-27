@@ -20,10 +20,29 @@ class handler(handler.hdlr):
     def lap_insert(self):
         return template.render('template_html/admin_lap_insert.html', {})
 
-    def serversPage(argsList):
+    def serversPage(self, argsList):
+
+        activeSet = False
+        ssi = ss.interface()
+        serverList = ssi.getAllServers()
+
+        for s in serverList:
+            if (len(argsList)) and (s.name == argsList[0]):
+                s.Active = True
+                activeSet = True
+            s.linkstring = "/admin/servers/" + s.name
+
+        # this is so that we can add new servers
+        newServer = ss.serverSetup()
+        newServer.name = "+new"
+        newServer.linkstring = "/admin/servers/"
+        if not activeSet:
+            newServer.Active = True
+        serverList.append(newServer)
+        logging.info(str(serverList))
 
         content = template.render('template_html/admin_servers.html',
-                                  {})
+                                  {'serverList': serverList})
         return content
 
     def get(self, url_ext):
@@ -34,25 +53,19 @@ class handler(handler.hdlr):
         logging.info(url_ext)
         page_txt = "Admin"
 
-        url_split = url_ext.split('/')
-        url_extras = []
-        for x in url_split[1:]:
-            if x != '':
-                url_extras.append(x)
-        if len(url_extras) == 0:
-            url_extras.append('menu')
+        url_split = sup.url_split(url_ext)
 
         content = template.render('template_html/branding_bar.html',
                                   {'page': page_txt})
 
-        if url_extras[0] == 'servers':
-            content += self.serversPage(url_extras[1:])
+        if url_split[0] == 'servers':
+            content += self.serversPage(url_split[1:])
 
-        elif url_extras[0] == 'lap_insert':
+        elif url_split[0] == 'lap_insert':
             logging.info("lap_insert")
             content += self.lap_insert()
 
-        elif url_extras[0] == 'insert_dummy_data':
+        elif url_split[0] == 'insert_dummy_data':
             logging.info("Inserting Dummy Data")
 
             db_if = data_store.interface(config.root_node())
@@ -65,7 +78,7 @@ class handler(handler.hdlr):
             self.redirect('/admin/')
             return
 
-        elif url_extras[0] == 'importfromfile':
+        elif url_split[0] == 'importfromfile':
             logging.debug("insert from file")
             content += template.render('template_html/importfromfile.html', {})
 
@@ -81,10 +94,9 @@ class handler(handler.hdlr):
         lap_details = []
         self.check_for_root()
 
-        if url_ext.startswith('/'):
-            url_ext = url_ext[1:]
+        url_split = sup.url_split(url_ext)
 
-        if url_ext.startswith("lap_insert"):
+        if url_split[0] == "lap_insert":
             logging.info("lap time submitted")
 
             db_if = data_store.interface(config.root_node())
@@ -101,7 +113,8 @@ class handler(handler.hdlr):
 
             db_if.add_lap_time(lap_details)
 
-        elif url_ext.startswith("importfromfile"):
+        elif url_split[0] == "importfromfile":
+            logging.info("importfromfile")
 
             xmlfile = self.request.POST.get('xmlfile').file.read()
             results = ET.fromstring(xmlfile)
@@ -111,6 +124,28 @@ class handler(handler.hdlr):
             for result in results:
                 db_if.add_lap_time(sup.translateXMLdictionary(result.attrib))
 
+        elif (url_split[0] == "servers"):
+            if (len(url_split) > 1) and (url_split[1] == "update_server"):
+                logging.info("update_server")
+
+                oldServerName = self.request.get("originalName")
+
+                sList = ss.interface().getServerByName(oldServerName)
+                if (sList is None) or (len(sList) == 0):
+                    s = ss.serverSetup(name=self.request.get("nsame"))
+                else:
+                    s = sList[0]
+
+                s.name = self.request.get("name")
+                s.track_name = self.request.get("track_name")
+                s.car_class_name = self.request.get("car_class_name")
+                s.description = self.request.get("description")
+
+                logging.info(str(s))
+                s.put()
+
+        else:
+            logging.info("other url:" + str(url_split))
         self.redirect('/admin/')
 
 
