@@ -31,19 +31,16 @@ class interface:
 
     def getServerByName(self, name):
         q = serverSetup.query().filter(serverSetup.name == name)
-        return q.fetch(1)
+        sList = q.fetch(1)
+        if len(sList):
+            return sList[0]
+        else:
+            return None
 
-    def addServer(self, serverDetails):
-        ss = serverSetup(name=serverDetails.name)
-        # fill in other server details
-        ss.put()
-
-    def updateServer(self, server, serverDetails):
-        if server is not serverSetup:
-            logging.error('Need a serverSetup object to be able to update it')
-            return
-        # copy over all serverDetails and then push back to db
-        server.put()
+    def deleteServerByName(self, name):
+        s = self.getServerByName(name)
+        if s is not None:
+            s.key.delete()
 
 
 class server_details():

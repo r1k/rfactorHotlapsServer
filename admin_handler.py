@@ -130,19 +130,23 @@ class handler(handler.hdlr):
 
                 oldServerName = self.request.get("originalName")
 
-                sList = ss.interface().getServerByName(oldServerName)
-                if (sList is None) or (len(sList) == 0):
-                    s = ss.serverSetup(name=self.request.get("nsame"))
-                else:
-                    s = sList[0]
+                if self.request.get("button") == "delete":
+                    ss.interface().deleteServerByName(oldServerName)
 
-                s.name = self.request.get("name")
-                s.track_name = self.request.get("track_name")
-                s.car_class_name = self.request.get("car_class_name")
-                s.description = self.request.get("description")
+                elif self.reqest.get("button") == "add":
+                    sList = ss.interface().getServerByName(oldServerName)
+                    if (sList is None) or (len(sList) == 0):
+                        s = ss.serverSetup(name=self.request.get("nsame"))
+                    else:
+                        s = sList[0]
 
-                logging.info(str(s))
-                s.put()
+                    s.name = self.request.get("name")
+                    s.track_name = self.request.get("track_name")
+                    s.car_class_name = self.request.get("car_class_name")
+                    s.description = self.request.get("description")
+
+                    logging.info(str(s))
+                    s.put()
 
         else:
             logging.info("other url:" + str(url_split))
