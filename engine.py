@@ -88,17 +88,13 @@ class urlHandler(handler.hdlr):
 
         self.check_for_root()
 
-        url_split = url_ext.split('/')
-        url_root = url_split[0]
-        url_extras = []
-        for x in url_split[1:]:
-            if x != '':
-                url_extras.append(x)
+        url_split = sup.url_split(url_ext)
+        url_root = url_split[0:1]
 
         content = ""
 
         if (url_root in self.handlers):
-            content = self.handlers[url_root](url_extras)
+            content = self.handlers[url_root](url_split[1:])
         else:
             self.redirect('/r/welcome')
 

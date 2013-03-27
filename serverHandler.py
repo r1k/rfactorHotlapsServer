@@ -5,6 +5,7 @@ import logging
 
 import serverstatus as ss
 import handler
+import support_functions as sup
 
 
 class handler(handler.hdlr):
@@ -12,13 +13,9 @@ class handler(handler.hdlr):
     def get(self, url_ext):
         logging.debug("serverHandler")
 
-        url_split = url_ext.split('/')
-        url_extras = []
-        for x in url_split[1:]:
-            if x != '':
-                url_extras.append(x)
+        url_split = sup.url_split(url_ext)
 
-        num_args = len(url_extras)
+        num_args = len(url_split)
 
         content = template.render('template_html/branding_bar.html',
                                   {'page': "Fluffy Dedicated Servers"})
@@ -39,12 +36,12 @@ class handler(handler.hdlr):
 
             #work out index of server
             if num_args == 0:
-                url_extras.append(paired_status_list[0].name)
+                url_split.append(paired_status_list[0].name)
                 activeServerPage = paired_status_list[0]
             else:
                 count = 0
                 for s in paired_status_list:
-                    if s[0].name == url_extras[0]:
+                    if s[0].name == url_split[0]:
                         serverIndex = count
                         break
                     count += 1

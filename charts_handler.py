@@ -85,18 +85,14 @@ class handler(handler.hdlr):
         content = template.render('template_html/branding_bar.html',
                                   {'page': "Charts"})
 
-        url_split = url_ext.split('/')
-        url_extras = []
-        for x in url_split[1:]:
-            if x != '':
-                url_extras.append(x)
+        url_split = sup.url_split(url_ext)
 
         l_name = config.root_node()
         tracks_if = data_store.tracks(l_name)
 
-        num_args = len(url_extras)
+        num_args = len(url_split)
         logging.debug("Num args: " + str(num_args) +
-                      ', list: ' + str(url_extras))
+                      ', list: ' + str(url_split))
         if num_args == 0:
             #generate html containing top times for each track found
             logging.debug('list all')
@@ -113,7 +109,7 @@ class handler(handler.hdlr):
             #generate list of lap times for a specific track
             logging.debug('list by track')
             content += genTrackList(l_name,
-                                    tracks_if.get_by_name(url_extras[0]),
+                                    tracks_if.get_by_name(url_split[0]),
                                     base_url='./',
                                     list_gen=genFastestResultList)
 
@@ -121,8 +117,8 @@ class handler(handler.hdlr):
             #list all times for a specific track and car class
             logging.debug('list by track and car class')
             content += genClassList(l_name,
-                                    url_extras[0],
-                                    url_extras[1],
+                                    url_split[0],
+                                    url_split[1],
                                     base_url='../',
                                     list_gen=genResultList)
 
@@ -130,10 +126,10 @@ class handler(handler.hdlr):
             #list all the times for a specific track, car class, and driver
             logging.debug('list by track and car class and driver')
             content += genClassList(l_name,
-                              url_extras[0],
-                              url_extras[1],
+                              url_split[0],
+                              url_split[1],
                               base_url='../../',
-                              d_name=url_extras[2],
+                              d_name=url_split[2],
                               list_gen=genResultList,
                               template_html='template_html/driver_result.html')
 
