@@ -10,9 +10,6 @@ def url_split(url):
     for x in url_split:
         if x != '':
             url_parts.append(x)
-    # don't return a zero length array
-    if len(url_parts) == 0:
-        url_parts.append('')
     return url_parts
 
 

@@ -12,7 +12,8 @@ import support_functions as sup
 
 
 class handler(handler.hdlr):
-    """ Handler class for the admin functions
+    """
+        Handler class for the admin functions
     """
     def __init__(self, request=None, response=None):
         super(handler, self).__init__(request=request, response=response)
@@ -53,37 +54,45 @@ class handler(handler.hdlr):
         logging.info(url_ext)
         page_txt = "Admin"
 
+        content = template.render('template_html/branding_bar.html',
+                                      {'page': page_txt})
+
         url_split = sup.url_split(url_ext)
 
-        content = template.render('template_html/branding_bar.html',
-                                  {'page': page_txt})
-
-        if url_split[0] == 'servers':
-            content += self.serversPage(url_split[1:])
-
-        elif url_split[0] == 'lap_insert':
-            logging.info("lap_insert")
-            content += self.lap_insert()
-
-        elif url_split[0] == 'insert_dummy_data':
-            logging.info("Inserting Dummy Data")
-
-            db_if = data_store.interface(config.root_node())
-
-            dummy_data = sup.create_dictionary(config.input_labels(),
-                                               config.dummy_test_data())
-            for data in dummy_data:
-                db_if.add_lap_time(data)
-
-            self.redirect('/admin/')
-            return
-
-        elif url_split[0] == 'importfromfile':
-            logging.debug("insert from file")
-            content += template.render('template_html/importfromfile.html', {})
+        if len(url_split) == 0:
+            content += template.render('template_html/admin.html', {})
 
         else:
-            content += template.render('template_html/admin.html', {})
+
+            if url_split[0] == 'servers':
+                content += self.serversPage(url_split[1:])
+
+            elif url_split[0] == 'lap_insert':
+                logging.info("lap_insert")
+
+                content += self.lap_insert()
+
+            elif url_split[0] == 'insert_dummy_data':
+                logging.info("Inserting Dummy Data")
+
+                dummy_data = sup.create_dictionary(config.input_labels(),
+                                                   config.dummy_test_data())
+
+                db_if = data_store.interface(config.root_node())
+                for data in dummy_data:
+                    db_if.add_lap_time(data)
+
+                self.redirect('/admin/')
+
+            elif url_split[0] == 'importfromfile':
+                logging.debug("insert from file")
+
+                content += template.render('template_html/importfromfile.html',
+                                           {})
+
+            else:
+                self.redirect('/admin/')
+                content += template.render('template_html/admin.html', {})
 
         self.render(content)
 
@@ -91,16 +100,17 @@ class handler(handler.hdlr):
 
         logging.info("post")
 
-        lap_details = []
         self.check_for_root()
 
         url_split = sup.url_split(url_ext)
 
+        if len(url_split) == 0:
+            self.redirect('/admin/')
+
         if url_split[0] == "lap_insert":
             logging.info("lap time submitted")
 
-            db_if = data_store.interface(config.root_node())
-
+            lap_details = []
             lap_details['driverName'] = self.request.get("driverName")
             lap_details['carClass'] = self.request.get("carClass")
             lap_details['carName'] = self.request.get("carName")
@@ -108,10 +118,12 @@ class handler(handler.hdlr):
             lap_details['firstSec'] = float(self.request.get("firstSector"))
             lap_details['secondSec'] = float(self.request.get("secondSector"))
             lap_details['totalTime'] = float(self.request.get("totalTime"))
-
             logging.info(str(lap_details))
 
+            db_if = data_store.interface(config.root_node())
             db_if.add_lap_time(lap_details)
+
+            self.redirect('/admin/')
 
         elif url_split[0] == "importfromfile":
             logging.info("importfromfile")
@@ -123,6 +135,8 @@ class handler(handler.hdlr):
 
             for result in results:
                 db_if.add_lap_time(sup.translateXMLdictionary(result.attrib))
+
+            self.redirect('/admin/')
 
         elif (url_split[0] == "servers"):
             if (len(url_split) > 1) and (url_split[1] == "update_server"):
@@ -148,9 +162,11 @@ class handler(handler.hdlr):
                     logging.info(str(s))
                     s.put()
 
+            self.redirect('/admin/')
+
         else:
             logging.info("other url:" + str(url_split))
-        self.redirect('/admin/')
+            self.redirect('/admin/')
 
 
 logging.getLogger().setLevel(logging.DEBUG)
