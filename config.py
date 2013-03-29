@@ -1,6 +1,3 @@
-import serverstatus as ss
-
-
 def root_node():
     return 'ericsson_league'
 
@@ -27,24 +24,6 @@ def dummy_test_data():
            ['r1k', 'NASCAR', 'Olds', 'Moncao', 31.2, 23.7, 87.5],
            ['Fluffy', 'NASCAR', 'Chevrolet', 'Moncao', 31.2, 24.6, 65.6]
            ]
-
-
-def dummy_server_status_data():
-        srvrs = []
-        srvrs.append(ss.server_details(
-                ('DS1', 'Silverstone', 'Bus', 'Qualifying', '-',
-                 'Noddy and Big ears',
-                 '<a href="http://localhost:8080">Home</a>', '')))
-        srvrs.append(ss.server_details(
-                ('DS2', 'Monza', 'Chariot', 'Deathmatch', '-',
-                 'Ben Hur', '<a href="http://localhost:8080">Home</a>', '')))
-        srvrs.append(ss.server_details(
-                ('DS3', 'Milky Way', 'XWing', 'Qualifying', '-',
-                 'Darth', '<a href="http://localhost:8080">Home</a>', '')))
-        srvrs.append(ss.server_details(
-                ('DS4', 'Indianapolis', 'NASCAR', 'Turning Left', '-',
-                 'Dickie', '<a href="http://localhost:8080">Home</a>', '')))
-        return srvrs
 
 
 def max_num_servers():

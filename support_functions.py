@@ -13,6 +13,22 @@ def url_split(url):
     return url_parts
 
 
+def rebuild_links(plain_string):
+    #only need to check extra links
+    string = ""
+
+    if 'rfactor://' in plain_string:
+        string = '<a href="' + plain_string + '">Join Server</a>'
+    elif 'live.asp' in plain_string:
+        string = '<a href="' + plain_string + '">Live stats</a>'
+    elif 'rfactor/woli' in plain_string:
+        string = '<a href="' + plain_string + '">Start Server PC</a>'
+    else:
+        string = plain_string
+
+    return string
+
+
 def create_dictionary(labels, data_lists):
     temp = []
     for data in data_lists:

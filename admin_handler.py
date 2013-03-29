@@ -99,7 +99,7 @@ class handler(handler.hdlr):
     def post(self, url_ext):
 
         logging.info("post")
-
+        logging.info(url_ext)
         self.check_for_root()
 
         url_split = sup.url_split(url_ext)
@@ -138,29 +138,37 @@ class handler(handler.hdlr):
 
             self.redirect('/admin/')
 
-        elif (url_split[0] == "servers"):
-            if (len(url_split) > 1) and (url_split[1] == "update_server"):
-                logging.info("update_server")
+        elif (
+              (url_split[0] == "update_server") or
+              (
+                  (url_split[0] == "servers") and
+                  (url_split[1] == "update_server")
+              )
+             ):
 
-                oldServerName = self.request.get("originalName")
+            logging.info("update_server")
 
-                if self.request.get("button") == "delete":
-                    ss.interface().deleteServerByName(oldServerName)
+            oldServerName = self.request.get("originalName")
 
-                elif self.reqest.get("button") == "add":
-                    sList = ss.interface().getServerByName(oldServerName)
-                    if (sList is None) or (len(sList) == 0):
-                        s = ss.serverSetup(name=self.request.get("nsame"))
-                    else:
-                        s = sList[0]
+            if self.request.get("button") == "delete":
+                ss.interface().deleteServerByName(oldServerName)
 
-                    s.name = self.request.get("name")
-                    s.track_name = self.request.get("track_name")
-                    s.car_class_name = self.request.get("car_class_name")
-                    s.description = self.request.get("description")
+            elif self.request.get("button") == "add":
+                s = ss.interface().getServerByName(oldServerName)
+                logging.info(s)
+                if s is None:
+                    logging.info("create new")
+                    s = ss.serverSetup(name=self.request.get("nsame"))
 
-                    logging.info(str(s))
-                    s.put()
+                    logging.info("s is:" + str(s))
+
+                s.name = self.request.get("name")
+                s.track_name = self.request.get("track_name")
+                s.car_class_name = self.request.get("car_class_name")
+                s.description = self.request.get("description")
+
+                logging.info(str(s))
+                s.put()
 
             self.redirect('/admin/')
 

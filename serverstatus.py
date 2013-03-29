@@ -43,53 +43,6 @@ class interface:
             s.key.delete()
 
 
-class server_details():
-
-    def __init__(self, dtls):
-        self.details = dtls[self.extras:]
-        self.name = dtls[0]
-        self.image = dtls[1]
-        self.track = dtls[2]
-        self.vclass = dtls[3]
-        self.seshtype = dtls[4]
-        self.seshstatus = dtls[5]
-        self.driverlist = dtls[6]
-        self.total_rows = len(dtls) - 1
-        self.extras = 7
-
-    def __str__(self):
-        string = self.name + ', ' +\
-                 self.image + ', ' +\
-                 self.track + ', ' +\
-                 self.vclass + ', ' +\
-                 self.seshtype + ', ' +\
-                 self.seshstatus + ', ' +\
-                 self.driverlist
-
-        for i in self.details:
-                string = string + ', ' + i
-
-        return string
-
-    def rebuild_links(self):
-        #only need to check extra links
-        string = ""
-        local_details = []
-
-        for d in self.details:
-            if 'rfactor://' in d:
-                string = '<a href="' + d + '">Join Server</a>'
-            elif 'live.asp' in d:
-                string = '<a href="' + d + '">Live stats</a>'
-            elif 'rfactor/woli' in d:
-                string = '<a href="' + d + '">Start Server PC</a>'
-            else:
-                string = d
-            local_details.append(string)
-
-        self.details = local_details
-
-
 class serverParser(HTMLParser):
 
     def __init__(self):
@@ -118,7 +71,7 @@ class serverParser(HTMLParser):
         if self.collecting_data > 0:
             if tag == 'ul':
                 self.collecting_data = 0
-                self.servers.append(server_details(self.content))
+                self.servers.append(self.content)
                 self.content = []
             elif tag == 'li':
                 self.collecting_data = 1

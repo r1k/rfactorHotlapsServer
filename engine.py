@@ -71,17 +71,14 @@ def credits_handler(url_ext):
 
 class urlHandler(handler.hdlr):
 
-    handlers = {}
+    handlers = {'welcome': welcome_handler,
+                'servers': server_handler,
+                'links': links_handler,
+                'help': help_handler,
+                'credits': credits_handler}
 
     def __init__(self, request=None, response=None):
         super(urlHandler, self).__init__(request=request, response=response)
-
-        self.handlers = {}
-        self.handlers['welcome'] = welcome_handler
-        self.handlers['servers'] = server_handler
-        self.handlers['links'] = links_handler
-        self.handlers['help'] = help_handler
-        self.handlers['credits'] = credits_handler
 
     def get(self, url_ext):
         logging.debug(url_ext)
@@ -89,7 +86,7 @@ class urlHandler(handler.hdlr):
         self.check_for_root()
 
         url_split = sup.url_split(url_ext)
-        url_root = url_split[0:1]
+        url_root = ''.join(url_split[0:1])  # this works if the list is empty
 
         content = ""
 
