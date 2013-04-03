@@ -35,6 +35,14 @@
                 <textarea name="description" rows="3">{{ server.description }}</textarea>
             </div>
         </div>
+        <div class="control-group">
+            <button class="btn btn-primary" style="width:200px" name="button" value="add" type="submit">Add/Modify</button>
+            <button class="btn btn-primary" style="width:200px" name="button" value="delete" type="submit">Delete</button>
+        </div>
+    </form>
+    <form class="form-horizontal" action="/imageBlobg/update_image" method="post" enctype="multipart/form-data">
+        <img src=/imageBlobs/{{ server.image }} alt="Car"/>
+        <input type="hidden" name="serverName" value="{{ server.name }}">
         <div class="fileupload fileupload-new" data-provides="fileupload">JPEG file for car image
             <div class="input-append">
             <!-- careful next div, i and span have to be on the same line -->
@@ -50,7 +58,6 @@
         </div>
         <div class="control-group">
             <button class="btn btn-primary" style="width:200px" name="button" value="add" type="submit">Add/Modify</button>
-            <button class="btn btn-primary" style="width:200px" name="button" value="delete" type="submit">Delete</button>
         </div>
     </form>
     {% endif %}

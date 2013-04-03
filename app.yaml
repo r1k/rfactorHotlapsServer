@@ -37,6 +37,12 @@ handlers:
 - url: /servers/.*
   script: serverHandler.app
 
+- url: /imageBlobs/.*
+  script: serverstatus.app
+
+- url: /imageBlobg/.*
+  script: serverstatus.app
+
 - url: /r/.*
   script: engine.app
 

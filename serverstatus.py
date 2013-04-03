@@ -1,5 +1,9 @@
 import urllib2
+import webapp2
 from google.appengine.ext import ndb
+from google.appengine.ext import blobstore
+from google.appengine.ext.webapp import blobstore_handlers
+
 from HTMLParser import HTMLParser
 import logging
 
@@ -10,7 +14,7 @@ class serverSetup(ndb.Model):
     track_name = ndb.StringProperty()
     car_class_name = ndb.StringProperty()
     description = ndb.TextProperty()
-    #image = ndb.BlobProperty()
+    image = ndb.BlobKeyProperty()
 
 
 class interface:
@@ -123,6 +127,34 @@ class serverInfo():
         for s in self.server_list:
             s.rebuild_links()
             logging.debug(s)
+
+
+class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
+    def post(self):
+        upload_files = self.get_uploads('jpgfile')
+        # get reference to server
+        s = interface().getServerByName(self.request.get("serverName"))
+        if s is not None:
+            blob_info = upload_files[0]
+            if s.image is not None:
+                # delete old image
+                ndb.BlobInfo(s.image).delete()
+            s.image = blob_info.key()
+            s.put()
+        self.reload()
+
+
+class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
+    def get(self, resource):
+        resource = str(urllib2.unquote(resource))
+        blob_info = blobstore.BlobInfo.get(resource)
+        self.send_blob(blob_info)
+
+
+logging.getLogger().setLevel(logging.DEBUG)
+app = webapp2.WSGIApplication([(r'/imageBlobs/(.*)', ServeHandler),
+                               (r'/imageBlobg/(.*)', UploadHandler)],
+                              debug=True)
 
 
 if __name__ == "__main__":

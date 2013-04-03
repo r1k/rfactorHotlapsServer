@@ -1,6 +1,7 @@
 import logging
 import webapp2
 from google.appengine.ext.webapp import template
+from google.appengine.ext import ndb
 import xml.etree.ElementTree as ET
 
 import handler
@@ -167,10 +168,16 @@ class handler(handler.hdlr):
                 s.car_class_name = self.request.get("car_class_name")
                 s.description = self.request.get("description")
 
+                if s.image != '':
+                    s.imageBlob = ndb.BlobInfo(self.image)
+
                 logging.info(str(s))
                 s.put()
 
-            self.redirect('/admin/')
+                self.redirect('/admin/servers/' + s.name)
+
+            else:
+                self.redirect('/admin/servers/')
 
         else:
             logging.info("other url:" + str(url_split))
