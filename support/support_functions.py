@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import logging
 from data_store import lap_record
 from datetime import datetime
