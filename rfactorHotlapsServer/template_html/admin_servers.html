@@ -1,0 +1,65 @@
+<!-- form for manually inserting laptimes -->
+<div class="container"><div class="row-fluid"><div class="span8 offset2">
+<ul class="nav nav-tabs">
+    {% for server in serverList %}
+        <li {% if server.Active %}
+                class="active"
+            {% endif %}
+        >
+            <a href={{server.linkstring|safe}}>{{ server.name }}</a>
+        </li>
+    {% endfor %}
+</ul>
+{% for server in serverList %}
+    {% if server.Active %}
+<h3>Modify Server : {{ server.name }}</h3>
+    <form class="form-horizontal" action="update_server" method="post">
+        <input type="hidden" name="originalName" value="{{ server.name }}">
+        <div class="control-group"><label class="control-label" for="name">Server Name</label>
+            <div class="controls">
+                <input type="text" name="name" value="{{ server.name }}">
+            </div>
+        </div>
+        <div class="control-group"><label class="control-label" for="track_name">Track Name</label>
+            <div class="controls">
+                <input type="text" name="track_name" value="{{ server.track_name }}">
+            </div>
+        </div>
+        <div class="control-group"><label class="control-label" for="car_class_name">Car Class</label>
+            <div class="controls">
+                <input type="text" name="car_class_name" value="{{ server.car_class_name }}">
+            </div>
+        </div>
+        <div class="control-group"><label class="control-label" for="description">Description</label>
+            <div class="controls">
+                <textarea name="description" rows="3">{{ server.description }}</textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <button class="btn btn-primary" style="width:200px" name="button" value="add" type="submit">Add/Modify</button>
+            <button class="btn btn-primary" style="width:200px" name="button" value="delete" type="submit">Delete</button>
+        </div>
+    </form>
+    <form class="form-horizontal" action="/imageBlobg/update_image" method="post" enctype="multipart/form-data">
+        <img src=/imageBlobs/{{ server.image }} alt="Car"/>
+        <input type="hidden" name="serverName" value="{{ server.name }}">
+        <div class="fileupload fileupload-new" data-provides="fileupload">JPEG file for car image
+            <div class="input-append">
+            <!-- careful next div, i and span have to be on the same line -->
+                <div class="uneditable-input span4"><i class="icon-file fileupload-exists"></i><span class="fileupload-preview"></span>
+                </div>
+                <span class="btn btn-file">
+                    <span class="fileupload-new">Select file</span>
+                    <span class="fileupload-exists">Change</span>
+                    <input type="file" id="file-input" name="jpgfile"/>
+                </span>
+                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+            </div>
+        </div>
+        <div class="control-group">
+            <button class="btn btn-primary" style="width:200px" name="button" value="add" type="submit">Add/Modify</button>
+        </div>
+    </form>
+    {% endif %}
+{% endfor %}
+</div></div></div>

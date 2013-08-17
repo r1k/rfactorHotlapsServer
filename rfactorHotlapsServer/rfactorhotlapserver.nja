@@ -1,0 +1,27 @@
+{
+  "mainFile": "G:/Programming/rfactorHotlapsServer/serverstatus.py", 
+  "venv": "", 
+  "relatedProjects": [], 
+  "name": "rfactorHotLapServer", 
+  "license": "GNU General Public License v3", 
+  "url": "", 
+  "pythonPath": "python", 
+  "preExecScript": "", 
+  "programParams": "", 
+  "PYTHONPATH": "", 
+  "supported-extensions": [
+    ".py", 
+    ".html", 
+    ".jpg", 
+    ".png", 
+    ".ui", 
+    ".css", 
+    ".json", 
+    ".js", 
+    ".ini", 
+    ".htm"
+  ], 
+  "project-type": "Import from sources", 
+  "postExecScript": "", 
+  "description": ""
+}

@@ -1,0 +1,24 @@
+<div class="row-fluid"><div class="span8 offset2">
+    <table class="result table" width="100%">
+        <tr><th colspan='7'><h4 class='black'>
+            <ul class="breadcrumb">
+                <li><a href="{{ track_url }}" title="Cick to see all recorded best laps for this track">{{ trackname }} </a><span class="divider">/</span></li>
+                <li><a href="{{ track_clas_url }}" title="Cick to see all recorded best laps for this track and vehicle class">{{ carclassname}}</a></li>
+            </ul>
+        </h4></th></tr>
+        <tr bgcolor="#9acd32">
+            <th width="20%">Driver</th><th>Car</th><th width="10%">Sector 1</th><th width="10%">Sector 2</th><th width="10%">Sector 3</th><th width="10%">Lap Time</th><th width="10%"></th>
+        </tr>
+        {% for result in result_list %}
+        <tr class="highlight">
+        <td align="center">{{ result.driver }}</td>
+        <td align="center">{{ result.car }}</td>
+        <td align="center">{{ result.first_sector|floatformat:"3" }}</td>
+        <td align="center">{{ result.second_sector|floatformat:"3" }}</td>
+        <td align="center">{{ result.third_sector|floatformat:"3" }}</td>
+        <td align="center">{{ result.total_time|floatformat:"3" }}</a></td>
+        <td align="center">{{ result.date|date:"m/d/y h:i" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div></div>
