@@ -1,0 +1,19 @@
+server {
+    listen  80 default_server;
+    server_name rfactorhotlaps localhost;
+    access_log /var/log/nginx/rfactorhotlaps_access.log;
+    error_log /var/log/nginx/rfactorhotlaps_error.log;
+
+    location / {
+        uwsgi_pass  unix:///tmp/uwsgi.rfactorHotlaps.sock;
+        include     uwsgi_params;
+    }
+
+    location /media/  {
+        alias /home/rk/src/rfactorHotlaps/rfactorHotlapsServer/rfactorHotlapsServer/media/;
+    }
+
+    location  /static/ {
+        alias /home/rk/src/rfactorHotlaps/rfactorHotlapsServer/rfactorHotlapsServer/media/;
+    }
+}
