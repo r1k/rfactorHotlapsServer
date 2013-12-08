@@ -9,13 +9,13 @@ import config
 
 class OpeningPage(webapp2.RequestHandler):
 
-    back_ground = '<html><body style="background-image:url(/images/tarmac-texture.jpg); background-position: center top; background-size: cover;">\n'
+    back_ground = '<html><body style="background-image:url(/static/images/tarmac-texture.jpg); background-position: center top; background-size: cover;">\n'
 
     def get(self, *args):
 
         head_params = []
         head_params = {'site_title': config.site_title(),
-                       'specific_style': '<link href="/css/carousel.css" rel="stylesheet">'}
+                       'specific_style': '<link href="/static/css/carousel.css" rel="stylesheet">'}
 
         carousel_call = []
         carousel_call = "    <script> !function ($) { $(function(){ $('#myCarousel').carousel({ interval: 3000}) }) }(window.jQuery) </script>"

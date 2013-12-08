@@ -5,23 +5,8 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /bootstrap
-  static_dir: ./bootstrap
-
-- url: /jQuery
-  static_dir: ./jQuery
-
-- url: /images
-  static_dir: ./images
-
-- url: /html
-  static_dir: ./html
-
-- url: /css
-  static_dir: ./css
-
-- url: /js
-  static_dir: ./js
+- url: /static
+  static_dir: ./static
 
 - url: /favicon\.ico
   static_files: images/favicon.png
